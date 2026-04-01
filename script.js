@@ -92,7 +92,7 @@ const portfolioIndependentProjects = [
         thumbnail: 'sampulprojects/7.jpg',
         images: ['projectsimages/MAINTENANCERUMAHTINGGAL1.png', 'projectsimages/MAINTENANCERUMAHTINGGAL2.png'],
         location: 'Jakarta, Indonesia',
-        year: '2022'
+        year: '2023'
     },
     {
         id: 2,
@@ -102,7 +102,7 @@ const portfolioIndependentProjects = [
         thumbnail: 'sampulprojects/8.jpg',
         images: ['projectsimages/REHABILITASPLAFON1.png', 'projectsimages/REHABILITASPLAFON2.png'],
         location: 'Jakarta, Indonesia',
-        year: '2022'
+        year: '2024'
     },
     {
         id: 3,
@@ -112,7 +112,7 @@ const portfolioIndependentProjects = [
         thumbnail: 'sampulprojects/9.jpg',
         images: ['projectsimages/UPHOUSE1.png', 'projectsimages/UPHOUSE2.png'],
         location: 'Jakarta, Indonesia',
-        year: '2022'
+        year: '2024'
     },
     {
         id: 4,
@@ -122,7 +122,7 @@ const portfolioIndependentProjects = [
         thumbnail: 'sampulprojects/10.jpg',
         images: ['projectsimages/DESIGNINTERIOR1.png', 'projectsimages/DESIGNINTERIOR2.png'],
         location: 'Jakarta, Indonesia',
-        year: '2022'
+        year: '2024'
     },
     {
         id: 5,
@@ -132,7 +132,7 @@ const portfolioIndependentProjects = [
         thumbnail: 'sampulprojects/11.jpg',
         images: ['projectsimages/KUBIKACLASSICHOUSE1.png', 'projectsimages/KUBIKACLASSICHOUSE2.png'],
         location: 'Jakarta, Indonesia',
-        year: '2022'
+        year: '2024'
     },
     {
         id: 6,
@@ -142,7 +142,7 @@ const portfolioIndependentProjects = [
         thumbnail: 'sampulprojects/12.jpg',
         images: ['projectsimages/REVIVEMELAMIC1.png', 'projectsimages/REVIVEMELAMIC2.png'],
         location: 'Jakarta, Indonesia',
-        year: '2022'
+        year: '2025'
     },
     {
         id: 7,
@@ -152,7 +152,7 @@ const portfolioIndependentProjects = [
         thumbnail: 'sampulprojects/13.jpg',
         images: ['projectsimages/REVIVEMELAMIC1.png', 'projectsimages/REVIVEMELAMIC2.png'],
         location: 'Jakarta, Indonesia',
-        year: '2022'
+        year: '2025'
     },
 ];
 
