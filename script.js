@@ -23,7 +23,7 @@ const portfolioAcademicProjects = [
         title: 'Bee Space',
         category: 'Design',
         description: 'Comprehensive architectural study showcasing innovative design solutions and spatial planning. This project explores the intersection of form and function, creating dynamic spaces that respond to user needs while maintaining aesthetic integrity.',
-        thumbnail: 'sampulacademic/1.jpg',
+        thumbnail: 'sampulacademic/Bee Space.jpg',
         images: ['academicimages/academicprojectbeespace1.png', 'academicimages/academicprojectbeespace2.png'],
         location: 'Jakarta, Indonesia',
         year: '2022'
@@ -33,7 +33,7 @@ const portfolioAcademicProjects = [
         title: 'Sunhap',
         category: 'Design Landscape',
         description: 'Sustainable landscape architecture that harmonizes natural elements with modern design principles. This project demonstrates environmental sensitivity while creating functional outdoor spaces that enhance community well-being.',
-        thumbnail: 'sampulacademic/2.jpg',
+        thumbnail: 'sampulacademic/Sunhap.jpg',
         images: ['academicimages/academicprojectsunhap3.png', 'academicimages/academicprojectsunhap4.png'],
         location: 'Jakarta, Indonesia',
         year: '2023'
@@ -43,7 +43,7 @@ const portfolioAcademicProjects = [
         title: 'Sport Hall',
         category: 'Design Construction',
         description: 'Multi-functional sports facility designed with advanced structural systems and sustainable construction methods. This project showcases technical excellence in creating large-span spaces that support diverse athletic activities.',
-        thumbnail: 'sampulacademic/3.jpg',
+        thumbnail: 'sampulacademic/Sport Hall.jpg',
         images: ['academicimages/academicprojectsporthall5.png', 'academicimages/academicprojectsporthall6.png'],
         location: 'Jakarta, Indonesia',
         year: '2023'
@@ -53,7 +53,7 @@ const portfolioAcademicProjects = [
         title: 'Betang Global Academy',
         category: 'Design Vernacular',
         description: 'Educational facility that reinterprets traditional Dayak Betang architecture through contemporary lens. This project celebrates cultural heritage while meeting modern educational requirements, creating a bridge between past and present.',
-        thumbnail: 'sampulacademic/4.jpg',
+        thumbnail: 'sampulacademic/Betang Global Academy.jpg',
         images: ['academicimages/academicprojectbetangglobalacademy7.png', 'academicimages/academicprojectbetangglobalacademy8.png'],
         location: 'Jakarta, Indonesia',
         year: '2023'
@@ -63,7 +63,7 @@ const portfolioAcademicProjects = [
         title: 'Yukata Hotel',
         category: 'Design Sustainable',
         description: 'Eco-friendly hospitality design incorporating passive cooling strategies and renewable energy systems. This project demonstrates how luxury and sustainability can coexist, creating comfortable spaces with minimal environmental impact.',
-        thumbnail: 'sampulacademic/5.jpg',
+        thumbnail: 'sampulacademic/Yukata Hotel.jpg',
         images: ['academicimages/academicprojectyukatahotel9.png', 'academicimages/academicprojectyukatahotel10.png', 'academicimages/academicprojectyukatahotel11.png', 'academicimages/academicprojectyukatahotel12.png'],
         location: 'Jakarta, Indonesia',
         year: '2024'
@@ -73,7 +73,7 @@ const portfolioAcademicProjects = [
         title: 'Golden Serenity',
         category: 'Design Sustainable',
         description: 'Luxury residential development that prioritizes environmental responsibility without compromising on elegance. Features include green roofs, rainwater harvesting, and natural ventilation systems that reduce energy consumption.',
-        thumbnail: 'sampulacademic/6.jpg',
+        thumbnail: 'sampulacademic/Golden Serenity.jpg',
         images: ['academicimages/academicprojectgoldenserenity13.png', 'academicimages/academicprojectgoldenserenity14.png', 'academicimages/academicprojectgoldenserenity15.png', 'academicimages/academicprojectgoldenserenity16.png'],
         location: 'Jakarta, Indonesia',
         year: '2025'
@@ -86,8 +86,8 @@ const portfolioIndependentProjects = [
         title: 'Maintenance Rumah Tinggal',
         category: 'Maintenance',
         description: 'Rehabilitasi menyeluruh hunian residensial di Jakarta yang mengalami kerusakan struktural dan estetik. Tantangan utama: memperbaiki plafon, dinding, dan finishing tanpa mengganggu aktivitas penghuni. Solusi: penjadwalan kerja bertahap dengan material terpilih yang meminimalkan gangguan harian.',
-        thumbnail: 'sampulprojects/7.jpg',
-        images: ['projectsimages/MAINTENANCERUMAHTINGGAL1.png', 'projectsimages/MAINTENANCERUMAHTINGGAL2.png'],
+        thumbnail: 'sampulprojects/Maintenance Rumah Tinggal.jpg',
+        images: ['Independent Work/MAINTENANCE RUMAH TINGGAL/1.webp', 'Independent Work/MAINTENANCE RUMAH TINGGAL/2.webp', 'Independent Work/MAINTENANCE RUMAH TINGGAL/3.webp', 'Independent Work/MAINTENANCE RUMAH TINGGAL/4.webp', 'Independent Work/MAINTENANCE RUMAH TINGGAL/5.webp'],
         location: 'Jakarta, Indonesia',
         year: '2023'
     },
@@ -96,8 +96,8 @@ const portfolioIndependentProjects = [
         title: 'Rehabilitas Plafon',
         category: 'Maintenance',
         description: 'Proyek rehabilitasi plafon pada bangunan residensial dengan kondisi material lama yang sudah melampaui usia pakai. Pendekatan: assessment menyeluruh sebelum eksekusi, penggantian material dengan sistem modern yang lebih ringan dan tahan lembap, serta finishing rapi yang selaras dengan interior existing.',
-        thumbnail: 'sampulprojects/8.jpg',
-        images: ['projectsimages/REHABILITASPLAFON1.png', 'projectsimages/REHABILITASPLAFON2.png'],
+        thumbnail: 'sampulprojects/Rehabilitas Plafon.jpg',
+        images: ['Independent Work/REHABILITASI PLAFON/1.webp', 'Independent Work/REHABILITASI PLAFON/2.webp', 'Independent Work/REHABILITASI PLAFON/3.webp'],
         location: 'Jakarta, Indonesia',
         year: '2024'
     },
@@ -106,8 +106,8 @@ const portfolioIndependentProjects = [
         title: 'Up House',
         category: 'Design and Build',
         description: 'Hunian dua lantai yang dirancang untuk memaksimalkan luas lahan terbatas di lingkungan padat. Konsep "up" mengeksplorasi vertikalitas — ruang terbuka di lantai dasar, area privat yang tenang di atas. Desain fasad yang tegas namun ramah dengan material lokal berkualitas.',
-        thumbnail: 'sampulprojects/9.jpg',
-        images: ['projectsimages/UPHOUSE1.png', 'projectsimages/UPHOUSE2.png'],
+        thumbnail: 'sampulprojects/Up House.jpg',
+        images: ['Independent Work/UP HOUSE/1.webp', 'Independent Work/UP HOUSE/2.webp', 'Independent Work/UP HOUSE/3.webp', 'Independent Work/UP HOUSE/4.webp', 'Independent Work/UP HOUSE/5.webp'],
         location: 'Jakarta, Indonesia',
         year: '2024'
     },
@@ -116,8 +116,8 @@ const portfolioIndependentProjects = [
         title: 'Design Interior',
         category: 'Design Interior',
         description: 'Perancangan interior ruang hunian dengan pendekatan kontemporer yang hangat. Klien menginginkan ruang yang terasa luas namun personal — dijawab dengan palet netral, pencahayaan lapis, dan furnitur custom built-in yang efisien. Hasilnya: ruang 45m² yang terasa lapang dan penuh karakter.',
-        thumbnail: 'sampulprojects/10.jpg',
-        images: ['projectsimages/DESIGNINTERIOR1.png', 'projectsimages/DESIGNINTERIOR2.png'],
+        thumbnail: 'sampulprojects/Design Interior.jpg',
+        images: ['Independent Work/DESIGN INTERIOR/1.webp', 'Independent Work/DESIGN INTERIOR/2.webp', 'Independent Work/DESIGN INTERIOR/3.webp', 'Independent Work/DESIGN INTERIOR/4.webp', 'Independent Work/DESIGN INTERIOR/5.webp'],
         location: 'Jakarta, Indonesia',
         year: '2024'
     },
@@ -126,8 +126,8 @@ const portfolioIndependentProjects = [
         title: 'Kubika Classic House',
         category: 'Design and Build',
         description: 'Hunian klasik modern dengan komposisi kubik yang kuat dan proporsi yang harmonis. Proyek ini menggabungkan detail-detail arsitektur klasik — seperti kolom, cornice, dan simetri — ke dalam bahasa desain kontemporer yang relevan dan elegan untuk konteks residensial urban Jakarta.',
-        thumbnail: 'sampulprojects/11.jpg',
-        images: ['projectsimages/KUBIKACLASSICHOUSE1.png', 'projectsimages/KUBIKACLASSICHOUSE2.png'],
+        thumbnail: 'sampulprojects/Kubika Classic House.jpg',
+        images: ['Independent Work/KUBIKA CLASSIC HOUSE/1.webp', 'Independent Work/KUBIKA CLASSIC HOUSE/2.webp', 'Independent Work/KUBIKA CLASSIC HOUSE/3.webp', 'Independent Work/KUBIKA CLASSIC HOUSE/4.webp'],
         location: 'Jakarta, Indonesia',
         year: '2024'
     },
@@ -136,8 +136,8 @@ const portfolioIndependentProjects = [
         title: 'Revive With Melamic',
         category: 'Maintenance',
         description: 'Peremajaan furnitur dan elemen kayu existing melalui aplikasi finishing melamic berkualitas tinggi. Proyek ini membuktikan bahwa dengan material dan teknik yang tepat, furnitur lama bisa kembali tampil seperti baru — bahkan lebih baik — tanpa perlu penggantian total.',
-        thumbnail: 'sampulprojects/12.jpg',
-        images: ['projectsimages/REVIVEMELAMIC1.png', 'projectsimages/REVIVEMELAMIC2.png'],
+        thumbnail: 'sampulprojects/Revive With Melamic.jpg',
+        images: ['Independent Work/REVIVE WITH MELAMIC/1.webp', 'Independent Work/REVIVE WITH MELAMIC/2.webp', 'Independent Work/REVIVE WITH MELAMIC/3.webp'],
         location: 'Jakarta, Indonesia',
         year: '2025'
     },
@@ -146,8 +146,8 @@ const portfolioIndependentProjects = [
         title: 'Subang House',
         category: 'Design and Build',
         description: 'Hunian di Subang yang mengintegrasikan konteks alam sekitarnya ke dalam desain — orientasi bangunan mengikuti arah angin dan matahari, bukaan besar yang mengundang cahaya alami, serta material lokal yang memperkuat identitas arsitektur vernakular kontemporer.',
-        thumbnail: 'sampulprojects/13.jpg',
-        images: ['projectsimages/REVIVEMELAMIC1.png', 'projectsimages/REVIVEMELAMIC2.png'],
+        thumbnail: 'sampulprojects/Subang House.jpg',
+        images: ['Independent Work/SUBANG HOUSE/1.webp', 'Independent Work/SUBANG HOUSE/2.webp', 'Independent Work/SUBANG HOUSE/3.webp', 'Independent Work/SUBANG HOUSE/4.webp', 'Independent Work/SUBANG HOUSE/5.webp', 'Independent Work/SUBANG HOUSE/6.webp', 'Independent Work/SUBANG HOUSE/7.webp', 'Independent Work/SUBANG HOUSE/8.webp'],
         location: 'Jakarta, Indonesia',
         year: '2025'
     },
