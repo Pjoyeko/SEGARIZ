@@ -1,6 +1,3 @@
-// ============================================
-// EMAIL CONFIGURATION - EMAILJS
-// ============================================
 const EMAILJS_CONFIG = {
     PUBLIC_KEY: 'tb7MbYKTO00W2hM9N', 
     SERVICE_ID: 'service_gwx47gd',     
@@ -88,7 +85,7 @@ const portfolioIndependentProjects = [
         id: 1,
         title: 'Maintenance Rumah Tinggal',
         category: 'Maintenance',
-        description: 'Comprehensive architectural study showcasing innovative design solutions and spatial planning. This project explores the intersection of form and function, creating dynamic spaces that respond to user needs while maintaining aesthetic integrity.',
+        description: 'Rehabilitasi menyeluruh hunian residensial di Jakarta yang mengalami kerusakan struktural dan estetik. Tantangan utama: memperbaiki plafon, dinding, dan finishing tanpa mengganggu aktivitas penghuni. Solusi: penjadwalan kerja bertahap dengan material terpilih yang meminimalkan gangguan harian.',
         thumbnail: 'sampulprojects/7.jpg',
         images: ['projectsimages/MAINTENANCERUMAHTINGGAL1.png', 'projectsimages/MAINTENANCERUMAHTINGGAL2.png'],
         location: 'Jakarta, Indonesia',
@@ -98,7 +95,7 @@ const portfolioIndependentProjects = [
         id: 2,
         title: 'Rehabilitas Plafon',
         category: 'Maintenance',
-        description: 'Comprehensive architectural study showcasing innovative design solutions and spatial planning. This project explores the intersection of form and function, creating dynamic spaces that respond to user needs while maintaining aesthetic integrity.',
+        description: 'Proyek rehabilitasi plafon pada bangunan residensial dengan kondisi material lama yang sudah melampaui usia pakai. Pendekatan: assessment menyeluruh sebelum eksekusi, penggantian material dengan sistem modern yang lebih ringan dan tahan lembap, serta finishing rapi yang selaras dengan interior existing.',
         thumbnail: 'sampulprojects/8.jpg',
         images: ['projectsimages/REHABILITASPLAFON1.png', 'projectsimages/REHABILITASPLAFON2.png'],
         location: 'Jakarta, Indonesia',
@@ -108,7 +105,7 @@ const portfolioIndependentProjects = [
         id: 3,
         title: 'Up House',
         category: 'Design and Build',
-        description: 'Comprehensive architectural study showcasing innovative design solutions and spatial planning. This project explores the intersection of form and function, creating dynamic spaces that respond to user needs while maintaining aesthetic integrity.',
+        description: 'Hunian dua lantai yang dirancang untuk memaksimalkan luas lahan terbatas di lingkungan padat. Konsep "up" mengeksplorasi vertikalitas — ruang terbuka di lantai dasar, area privat yang tenang di atas. Desain fasad yang tegas namun ramah dengan material lokal berkualitas.',
         thumbnail: 'sampulprojects/9.jpg',
         images: ['projectsimages/UPHOUSE1.png', 'projectsimages/UPHOUSE2.png'],
         location: 'Jakarta, Indonesia',
@@ -118,7 +115,7 @@ const portfolioIndependentProjects = [
         id: 4,
         title: 'Design Interior',
         category: 'Design Interior',
-        description: 'Comprehensive architectural study showcasing innovative design solutions and spatial planning. This project explores the intersection of form and function, creating dynamic spaces that respond to user needs while maintaining aesthetic integrity.',
+        description: 'Perancangan interior ruang hunian dengan pendekatan kontemporer yang hangat. Klien menginginkan ruang yang terasa luas namun personal — dijawab dengan palet netral, pencahayaan lapis, dan furnitur custom built-in yang efisien. Hasilnya: ruang 45m² yang terasa lapang dan penuh karakter.',
         thumbnail: 'sampulprojects/10.jpg',
         images: ['projectsimages/DESIGNINTERIOR1.png', 'projectsimages/DESIGNINTERIOR2.png'],
         location: 'Jakarta, Indonesia',
@@ -128,7 +125,7 @@ const portfolioIndependentProjects = [
         id: 5,
         title: 'Kubika Classic House',
         category: 'Design and Build',
-        description: 'Comprehensive architectural study showcasing innovative design solutions and spatial planning. This project explores the intersection of form and function, creating dynamic spaces that respond to user needs while maintaining aesthetic integrity.',
+        description: 'Hunian klasik modern dengan komposisi kubik yang kuat dan proporsi yang harmonis. Proyek ini menggabungkan detail-detail arsitektur klasik — seperti kolom, cornice, dan simetri — ke dalam bahasa desain kontemporer yang relevan dan elegan untuk konteks residensial urban Jakarta.',
         thumbnail: 'sampulprojects/11.jpg',
         images: ['projectsimages/KUBIKACLASSICHOUSE1.png', 'projectsimages/KUBIKACLASSICHOUSE2.png'],
         location: 'Jakarta, Indonesia',
@@ -138,7 +135,7 @@ const portfolioIndependentProjects = [
         id: 6,
         title: 'Revive With Melamic',
         category: 'Maintenance',
-        description: 'Comprehensive architectural study showcasing innovative design solutions and spatial planning. This project explores the intersection of form and function, creating dynamic spaces that respond to user needs while maintaining aesthetic integrity.',
+        description: 'Peremajaan furnitur dan elemen kayu existing melalui aplikasi finishing melamic berkualitas tinggi. Proyek ini membuktikan bahwa dengan material dan teknik yang tepat, furnitur lama bisa kembali tampil seperti baru — bahkan lebih baik — tanpa perlu penggantian total.',
         thumbnail: 'sampulprojects/12.jpg',
         images: ['projectsimages/REVIVEMELAMIC1.png', 'projectsimages/REVIVEMELAMIC2.png'],
         location: 'Jakarta, Indonesia',
@@ -148,7 +145,7 @@ const portfolioIndependentProjects = [
         id: 7,
         title: 'Subang House',
         category: 'Design and Build',
-        description: 'Comprehensive architectural study showcasing innovative design solutions and spatial planning. This project explores the intersection of form and function, creating dynamic spaces that respond to user needs while maintaining aesthetic integrity.',
+        description: 'Hunian di Subang yang mengintegrasikan konteks alam sekitarnya ke dalam desain — orientasi bangunan mengikuti arah angin dan matahari, bukaan besar yang mengundang cahaya alami, serta material lokal yang memperkuat identitas arsitektur vernakular kontemporer.',
         thumbnail: 'sampulprojects/13.jpg',
         images: ['projectsimages/REVIVEMELAMIC1.png', 'projectsimages/REVIVEMELAMIC2.png'],
         location: 'Jakarta, Indonesia',
@@ -228,14 +225,21 @@ const getCategoryIcon = (category) => {
 // ============================================
 // PRELOADER
 // ============================================
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        if (elements.preloader) {
-            elements.preloader.classList.add('hidden');
-            document.body.style.overflow = 'visible';
-        }
-    }, 500);
-});
+function hidePreloader() {
+    var p = document.getElementById('preloader');
+    if (p) {
+        p.setAttribute('style', 'display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;');
+        p.classList.add('hidden');
+        try { p.parentNode.removeChild(p); } catch(e) {}
+    }
+    document.body.style.overflow = 'visible';
+    document.documentElement.style.overflow = '';
+}
+
+window.addEventListener('load', function() { hidePreloader(); setTimeout(hidePreloader, 300); });
+document.addEventListener('DOMContentLoaded', function() { setTimeout(hidePreloader, 800); });
+setTimeout(hidePreloader, 1500);
+setTimeout(hidePreloader, 3000);
 
 // ============================================
 // NAVIGATION
@@ -925,6 +929,17 @@ document.addEventListener('DOMContentLoaded', () => {
     generatePortfolioHorizontal(portfolioAcademicProjects, 'portfolioAcademicGrid', 'academic');
     generatePortfolioHorizontal(portfolioIndependentProjects, 'portfolioIndependentGrid', 'independent');
 
+    // Tag independent project cards with data-category for filter functionality
+    const indGrid = document.getElementById('portfolioIndependentGrid');
+    if (indGrid) {
+        const indCards = indGrid.querySelectorAll('.portfolio-horizontal-card');
+        indCards.forEach((card, i) => {
+            if (portfolioIndependentProjects[i]) {
+                card.setAttribute('data-category', portfolioIndependentProjects[i].category);
+            }
+        });
+    }
+
     // Setup portfolio navigation arrows
     setupPortfolioNavigation('independentScroll', 'independentPrev', 'independentNext');
     setupPortfolioNavigation('academicScroll', 'academicPrev', 'academicNext');
@@ -985,6 +1000,67 @@ function closeMobPanel() {
     if (panel) panel.classList.remove('mob-active');
     document.body.style.overflow = '';
 }
+
+// ── Swipe-down-to-close + blokir horizontal gesture browser ──
+;(function () {
+    let _startX = 0, _startY = 0, _dirLocked = null, _dragging = false;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const panel  = document.getElementById('mobPanel');
+        const topbar = document.querySelector('.mob-topbar');
+        if (!panel) return;
+
+        // Drag handle = topbar (area atas panel) agar tidak bentrok dengan scroll konten
+        const dragHandle = topbar || panel;
+
+        dragHandle.addEventListener('touchstart', (e) => {
+            if (!panel.classList.contains('mob-active')) return;
+            _startX    = e.touches[0].clientX;
+            _startY    = e.touches[0].clientY;
+            _dirLocked = null;
+            _dragging  = false;
+        }, { passive: true });
+
+        dragHandle.addEventListener('touchmove', (e) => {
+            if (!panel.classList.contains('mob-active')) return;
+            const dx = e.touches[0].clientX - _startX;
+            const dy = e.touches[0].clientY - _startY;
+
+            if (!_dirLocked && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+                _dirLocked = Math.abs(dy) > Math.abs(dx) ? 'v' : 'h';
+            }
+
+            if (_dirLocked === 'h') {
+                // Blokir horizontal agar tidak trigger browser back/forward
+                e.preventDefault();
+                return;
+            }
+
+            if (_dirLocked === 'v' && dy > 0) {
+                // Swipe ke bawah — geser panel mengikuti jari
+                _dragging = true;
+                e.preventDefault();
+                panel.style.transition = 'none';
+                panel.style.transform  = 'translateY(' + dy + 'px)';
+            }
+        }, { passive: false });
+
+        dragHandle.addEventListener('touchend', (e) => {
+            if (!panel.classList.contains('mob-active')) return;
+            const dy = e.changedTouches[0].clientY - _startY;
+
+            panel.style.transition = '';
+            panel.style.transform  = '';
+
+            if (_dragging && dy > 100) {
+                // Cukup jauh ke bawah → tutup panel
+                closeMobPanel();
+            }
+            _dragging  = false;
+            _dirLocked = null;
+        }, { passive: true });
+    });
+})();
 
 function mobRender() {
     if (!mobProject) return;
@@ -1078,15 +1154,23 @@ document.addEventListener('DOMContentLoaded', () => {
         mobDirLocked = null;
     }, { passive: true });
 
+    // passive: false agar bisa preventDefault() untuk cegah browser back/forward gesture
     photoLayer.addEventListener('touchmove', (e) => {
         const dx = e.touches[0].clientX - mobTouchX;
         const dy = e.touches[0].clientY - mobTouchY;
-        if (!mobDirLocked) mobDirLocked = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
-        if (mobDirLocked === 'h') {
-            const img = document.getElementById('mobPhotoImg');
-            if (img) img.style.transform = `translateX(${dx * 0.06}px)`;
+
+        // Tentukan arah satu kali saat threshold 8px tercapai
+        if (!mobDirLocked && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+            mobDirLocked = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
         }
-    }, { passive: true });
+
+        if (mobDirLocked === 'h') {
+            // Blokir browser navigation gesture (swipe back/forward)
+            e.preventDefault();
+            const img = document.getElementById('mobPhotoImg');
+            if (img) img.style.transform = `translateX(${dx * 0.18}px)`;
+        }
+    }, { passive: false });
 
     photoLayer.addEventListener('touchend', (e) => {
         const img = document.getElementById('mobPhotoImg');
@@ -1122,3 +1206,89 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight') mobGoTo(mobImgIndex + 1);
     if (e.key === 'ArrowLeft')  mobGoTo(mobImgIndex - 1);
 });
+// ============================================
+// STATS BAR — Animated Counter
+// ============================================
+function animateCounter(el, target, duration = 1600) {
+    const startTime = performance.now();
+    const startVal = 0;
+
+    function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Ease out cubic
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(startVal + (target - startVal) * eased);
+        el.textContent = current;
+        if (progress < 1) requestAnimationFrame(update);
+        else el.textContent = target;
+    }
+    requestAnimationFrame(update);
+}
+
+const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const statNums = entry.target.querySelectorAll('.stat-number[data-target]');
+            statNums.forEach(el => {
+                const target = parseInt(el.getAttribute('data-target'));
+                animateCounter(el, target);
+                el.removeAttribute('data-target');
+            });
+            statsObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.3 });
+
+const statsBar = document.querySelector('.stats-bar');
+if (statsBar) statsObserver.observe(statsBar);
+
+
+// ============================================
+// CASE STUDY FILTER TAGS
+// ============================================
+const filterTags = document.querySelectorAll('.filter-tag');
+
+filterTags.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Update active state
+        filterTags.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.getAttribute('data-filter');
+        const cards = document.querySelectorAll('#portfolioIndependentGrid .portfolio-horizontal-card');
+
+        cards.forEach(card => {
+            const category = card.getAttribute('data-category') || '';
+            const show = filter === 'all' || category === filter;
+            card.style.transition = 'opacity 0.3s, transform 0.3s';
+            if (show) {
+                card.style.opacity = '1';
+                card.style.transform = 'scale(1)';
+                card.style.pointerEvents = 'auto';
+            } else {
+                card.style.opacity = '0.2';
+                card.style.transform = 'scale(0.97)';
+                card.style.pointerEvents = 'none';
+            }
+        });
+    });
+});
+
+// ============================================
+// TAG DATA ATTRIBUTE on portfolio cards
+// (patch generatePortfolioHorizontal to add data-category)
+// ============================================
+const _origGenerate = generatePortfolioHorizontal;
+// Override: add data-category to each card after generation
+function generatePortfolioHorizontalWithCategory(projects, gridId, portfolioType) {
+    _origGenerate(projects, gridId, portfolioType);
+    const grid = document.getElementById(gridId);
+    if (!grid) return;
+    const cards = grid.querySelectorAll('.portfolio-horizontal-card');
+    cards.forEach((card, i) => {
+        if (projects[i]) {
+            card.setAttribute('data-category', projects[i].category);
+        }
+    });
+}
