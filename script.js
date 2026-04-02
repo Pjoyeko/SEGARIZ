@@ -992,6 +992,10 @@ function openMobPanel(portfolioType, projectIndex) {
         document.body.style.overflow = 'hidden';
         const sheet = document.getElementById('mobSheet');
         if (sheet) sheet.scrollTop = 0;
+
+        // Push state ke history supaya tombol back HP nutup panel dulu,
+        // bukan langsung keluar dari website
+        history.pushState({ mobPanelOpen: true }, '');
     }
 }
 
@@ -1000,6 +1004,15 @@ function closeMobPanel() {
     if (panel) panel.classList.remove('mob-active');
     document.body.style.overflow = '';
 }
+
+// Tangkap tombol back HP — kalau panel masih terbuka, tutup saja panelnya
+window.addEventListener('popstate', () => {
+    const panel = document.getElementById('mobPanel');
+    if (panel && panel.classList.contains('mob-active')) {
+        panel.classList.remove('mob-active');
+        document.body.style.overflow = '';
+    }
+});
 
 // ── Swipe-down-to-close + blokir horizontal gesture browser ──
 ;(function () {
