@@ -1014,6 +1014,28 @@ window.addEventListener('popstate', () => {
     }
 });
 
+// Cegah wheel/touch scroll di dalam panel bocor ke halaman utama
+;(function () {
+    document.addEventListener('DOMContentLoaded', () => {
+        const panel = document.getElementById('mobPanel');
+        if (!panel) return;
+
+        // Wheel event (desktop/trackpad)
+        panel.addEventListener('wheel', (e) => {
+            if (!panel.classList.contains('mob-active')) return;
+            const info = document.getElementById('mobInfo');
+            if (!info) return;
+            const atTop    = info.scrollTop === 0;
+            const atBottom = info.scrollTop + info.clientHeight >= info.scrollHeight - 1;
+            // Blokir hanya jika sudah di ujung scroll (mencegah propagasi ke body)
+            if ((e.deltaY < 0 && atTop) || (e.deltaY > 0 && atBottom)) {
+                e.preventDefault();
+            }
+            e.stopPropagation();
+        }, { passive: false });
+    });
+})();
+
 // ── Swipe-down-to-close + blokir horizontal gesture browser ──
 ;(function () {
     let _startX = 0, _startY = 0, _dirLocked = null, _dragging = false;
