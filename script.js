@@ -1257,17 +1257,23 @@ function mobGoTo(idx) {
 
 // Swipe gesture
 document.addEventListener('DOMContentLoaded', () => {
-    // ── Swipe foto di mob-hero: pakai CSS scroll-snap native, no JS drag ──
-    // Hanya pasang tap / swipe ringan via pointer events untuk navigasi foto
+    // ── Swipe foto di mob-hero ────────────────────────────────
+    // Pakai touchstart + touchend passive — TANPA preventDefault
+    // Tidak block scroll, tidak conflict sama native gesture
     const heroZone = document.querySelector('.mob-hero');
     if (heroZone) {
-        let startX = 0;
-        heroZone.addEventListener('pointerdown', (e) => {
-            startX = e.clientX;
+        let _tx = 0, _ty = 0;
+
+        heroZone.addEventListener('touchstart', (e) => {
+            _tx = e.touches[0].clientX;
+            _ty = e.touches[0].clientY;
         }, { passive: true });
-        heroZone.addEventListener('pointerup', (e) => {
-            const dx = e.clientX - startX;
-            if (Math.abs(dx) > 44) {
+
+        heroZone.addEventListener('touchend', (e) => {
+            const dx = e.changedTouches[0].clientX - _tx;
+            const dy = e.changedTouches[0].clientY - _ty;
+            // Hanya proses kalau horizontal dominan (bukan scroll vertikal)
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
                 dx < 0 ? mobGoTo(mobImgIndex + 1) : mobGoTo(mobImgIndex - 1);
             }
         }, { passive: true });
