@@ -154,24 +154,65 @@ const portfolioIndependentProjects = [
 ];
 
 // ============================================
-// PORTFOLIO NAVIGATION ARROWS
+// PORTFOLIO NAVIGATION ARROWS + TOUCH SWIPE
 // ============================================
 function setupPortfolioNavigation(scrollId, prevId, nextId) {
     const scroll = document.getElementById(scrollId);
     const prevBtn = document.getElementById(prevId);
     const nextBtn = document.getElementById(nextId);
-    
-    if (!scroll || !prevBtn || !nextBtn) return;
 
-    const getScrollAmount = () => Math.min(scroll.clientWidth * 0.8, 450);
-    
-    prevBtn.addEventListener('click', () => {
+    if (!scroll) return;
+
+    const getScrollAmount = () => Math.min(scroll.clientWidth * 0.85, 420);
+
+    if (prevBtn) prevBtn.addEventListener('click', () => {
         scroll.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
     });
-    
-    nextBtn.addEventListener('click', () => {
+    if (nextBtn) nextBtn.addEventListener('click', () => {
         scroll.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
     });
+
+    // Touch swipe — drag ikuti jari, snap di touchend
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let startScrollLeft = 0;
+    let isDragging = false;
+    let dirLocked = null;
+
+    scroll.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        startScrollLeft = scroll.scrollLeft;
+        isDragging = false;
+        dirLocked = null;
+    }, { passive: true });
+
+    scroll.addEventListener('touchmove', (e) => {
+        const dx = e.touches[0].clientX - touchStartX;
+        const dy = e.touches[0].clientY - touchStartY;
+
+        if (!dirLocked && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+            dirLocked = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
+        }
+
+        if (dirLocked === 'h') {
+            scroll.scrollLeft = startScrollLeft - dx;
+            isDragging = true;
+        }
+    }, { passive: true });
+
+    scroll.addEventListener('touchend', (e) => {
+        if (!isDragging) return;
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 40) {
+            scroll.scrollBy({
+                left: dx < 0 ? getScrollAmount() : -getScrollAmount(),
+                behavior: 'smooth'
+            });
+        }
+        isDragging = false;
+        dirLocked = null;
+    }, { passive: true });
 }
 
 
@@ -939,46 +980,53 @@ function setupServicesSwipe() {
     if (!servicesScroll) return;
 
     let touchStartX = 0;
-    let touchEndX = 0;
-    let scrollLeft = 0;
+    let touchStartY = 0;
+    let isDragging = false;
+    let dirLocked = null;
+    let startScrollLeft = 0;
 
     servicesScroll.addEventListener('touchstart', (e) => {
         touchStartX = e.touches[0].clientX;
-        scrollLeft = servicesScroll.scrollLeft;
+        touchStartY = e.touches[0].clientY;
+        startScrollLeft = servicesScroll.scrollLeft;
+        isDragging = false;
+        dirLocked = null;
     }, { passive: true });
 
     servicesScroll.addEventListener('touchmove', (e) => {
-        if (!touchStartX) return;
-        
-        const touchCurrentX = e.touches[0].clientX;
-        const diff = touchStartX - touchCurrentX;
-        servicesScroll.scrollLeft = scrollLeft + diff;
+        const dx = e.touches[0].clientX - touchStartX;
+        const dy = e.touches[0].clientY - touchStartY;
+
+        // Kunci arah sekali setelah 8px
+        if (!dirLocked && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+            dirLocked = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
+        }
+
+        if (dirLocked === 'h') {
+            // Ikuti jari secara natural (drag langsung)
+            servicesScroll.scrollLeft = startScrollLeft - dx;
+            isDragging = true;
+        }
+        // Jika arah vertikal, biarkan browser scroll halaman biasa
     }, { passive: true });
 
     servicesScroll.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].clientX;
-        handleServicesSwipeGesture();
-        touchStartX = 0;
-    });
+        if (!isDragging) return;
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        const swipeThreshold = 40;
 
-    function handleServicesSwipeGesture() {
-        const swipeThreshold = 50;
-        const diff = touchStartX - touchEndX;
-
-        if (Math.abs(diff) > swipeThreshold) {
-            if (diff > 0) {
-                servicesScroll.scrollBy({
-                    left: 350,
-                    behavior: 'smooth'
-                });
-            } else {
-                servicesScroll.scrollBy({
-                    left: -350,
-                    behavior: 'smooth'
-                });
-            }
+        if (Math.abs(dx) > swipeThreshold) {
+            // Snap ke kartu berikutnya/sebelumnya
+            const snapAmount = Math.min(servicesScroll.clientWidth * 0.85, 380);
+            servicesScroll.scrollBy({
+                left: dx < 0 ? snapAmount : -snapAmount,
+                behavior: 'smooth'
+            });
         }
-    }
+
+        isDragging = false;
+        dirLocked = null;
+    }, { passive: true });
 }
 
 // ============================================
