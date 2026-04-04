@@ -38,9 +38,18 @@
     box-sizing: border-box;
 }
 
+a, button, [role="button"] {
+    touch-action: manipulation;
+}
+
 html {
     scroll-behavior: smooth;
     overflow-x: hidden;
+}
+
+img {
+    max-width: 100%;
+    display: block;
 }
 
 body {
@@ -280,6 +289,8 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    transform: translateZ(0);
+    will-change: transform;
 }
 
 .hero-overlay {
@@ -669,7 +680,7 @@ section {
    About Section — Luxury Redesign
    ==================================== */
 .about-section {
-    background: var(--black);
+    background: var(--dark);
     padding: 0;
     overflow: hidden;
     position: relative;
@@ -1254,6 +1265,7 @@ section {
     min-height: 480px;
     display: flex;
     flex-direction: column;
+    scroll-snap-align: start;
 }
 
 .service-card-horizontal::before {
@@ -1385,6 +1397,7 @@ section {
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
     scrollbar-width: thin;
     scrollbar-color: rgba(201,169,110,0.4) transparent;
     padding: 20px 0 40px;
@@ -1423,6 +1436,7 @@ section {
     cursor: pointer;
     overflow: hidden;
     position: relative;
+    scroll-snap-align: start;
 }
 
 .portfolio-horizontal-card:hover {
@@ -1443,6 +1457,7 @@ section {
     height: 100%;
     object-fit: cover;
     transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
 }
 
 .portfolio-horizontal-card:hover .portfolio-horizontal-image img {
@@ -3098,6 +3113,12 @@ img:not(.lazy-img) {
    ==================================== */
 @media (max-width: 768px) {
 
+    /* ── Container Mobile ─────────────────────────── */
+    .container,
+    .container-fluid {
+        padding: 0 20px;
+    }
+
     /* ── Navbar Mobile ─────────────────────────────── */
     .menu-toggle {
         display: flex;
@@ -3965,11 +3986,18 @@ img:not(.lazy-img) {
 
     .mob-tab:last-child { border-right: none; }
 
-    .mob-tab img {
+    .mob-tab img,
+    .mob-tab picture {
         width: 100%; height: 100%;
         object-fit: cover;
         display: block;
         transition: transform .2s ease;
+    }
+
+    .mob-tab picture img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        display: block;
     }
 
     /* active tab: gold bottom bar + slightly brighter */
@@ -4461,6 +4489,8 @@ img:not(.lazy-img) {
     margin-bottom: 8px;
     overflow-x: auto;
     scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
 }
 
 .process-flow::-webkit-scrollbar { display: none; }
@@ -4477,6 +4507,7 @@ img:not(.lazy-img) {
     border-radius: 2px;
     position: relative;
     transition: var(--transition-fast);
+    scroll-snap-align: start;
 }
 
 .process-step:hover {
@@ -4639,11 +4670,13 @@ img:not(.lazy-img) {
     opacity: 0;
     transform: translateY(30px);
     transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1);
+    will-change: opacity, transform;
 }
 
 [data-animate].animated {
     opacity: 1;
     transform: translateY(0);
+    will-change: auto;
 }
 
 /* stagger children */
@@ -4732,4 +4765,73 @@ img:not(.lazy-img) {
 
 @media (max-width: 768px) {
     .hero-frame { display: none; }
+}
+
+/* ====================================
+   Touch Device — Disable hover effects
+   that can get "stuck" on mobile
+   ==================================== */
+@media (hover: none) and (pointer: coarse) {
+    .portfolio-horizontal-card:hover {
+        transform: none;
+        box-shadow: none;
+        border-color: rgba(201, 169, 110, 0.1);
+    }
+
+    .service-card-horizontal:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    .service-card-horizontal:hover::before {
+        transform: scaleX(0);
+    }
+
+    .portfolio-horizontal-card:active {
+        border-color: rgba(201, 169, 110, 0.35);
+        background: rgba(201, 169, 110, 0.04);
+    }
+
+    .btn:hover {
+        transform: none;
+    }
+
+    .btn-primary:hover {
+        background: var(--gold);
+        color: var(--black);
+    }
+
+    .btn-secondary:hover {
+        background: var(--gold);
+        color: var(--black);
+    }
+}
+
+/* ====================================
+   Mobile Nav Overlay
+   ==================================== */
+.nav-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+.nav-overlay.active {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .nav-overlay {
+        display: block;
+        pointer-events: none;
+    }
+    .nav-overlay.active {
+        pointer-events: auto;
+    }
 }

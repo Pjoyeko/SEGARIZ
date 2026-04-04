@@ -31,20 +31,23 @@
                 <span class="logo-text">SEGARIZ</span>
                 <span class="logo-subtext">ARCH</span>
             </a>
-            <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
             <ul class="nav-menu" id="navMenu">
-                <li><a href="#company" class="nav-link">Company</a></li>
+                <li><a href="#portfolio-independent" class="nav-link">Independent Projects</a></li>
+                <li><a href="#portfolio-academic" class="nav-link">Academic Projects</a></li>
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#services" class="nav-link">Services</a></li>
-                <li><a href="#portfolio-independent" class="nav-link">Independent Projects</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
         </div>
     </nav>
+
+    <!-- Mobile Nav Overlay -->
+    <div class="nav-overlay" id="navOverlay"></div>
 
     <!-- Hero Section -->
     <section id="home" class="hero">
@@ -116,128 +119,76 @@
 
 
 
-    <!-- ═══════════════════════════════════════
-         COMPANY PROFILE SECTION
-         ═══════════════════════════════════════ -->
-    <section id="company" class="company-section">
-        <div class="container">
-            <div class="company-layout">
-
-                <!-- LEFT: Identity Block -->
-                <div class="company-identity" data-animate>
-                    <div class="section-label">Who We Are</div>
-                    <h2 class="company-headline">SEGARIZ ARCH<br><em>Studio Profile</em></h2>
-                    <div class="company-gold-rule"></div>
-
-                    <p class="company-intro">
-                        SEGARIZ ARCH adalah studio arsitektur berbasis di Jakarta Selatan yang didirikan oleh Rizky Maulana. Kami hadir untuk menjawab kebutuhan desain arsitektur yang estetis, fungsional, dan berkelanjutan — mulai dari skala residensial hingga proyek komersial.
-                    </p>
-                    <p class="company-body">
-                        Setiap karya kami lahir dari satu keyakinan: bahwa ruang yang dirancang dengan niat akan membentuk cara hidup penghuninya. Kami tidak hanya membangun struktur — kami merancang pengalaman yang bertahan melampaui zamannya.
-                    </p>
-
-                    <div class="company-values-grid">
-                        <div class="company-value-item">
-                            <div class="cvi-mark">✦</div>
-                            <div class="cvi-body">
-                                <strong>Visi Konsisten</strong>
-                                <span>Setiap proyek diselesaikan dalam satu garis visi yang sama, dari konsep hingga serah terima.</span>
-                            </div>
-                        </div>
-                        <div class="company-value-item">
-                            <div class="cvi-mark">✦</div>
-                            <div class="cvi-body">
-                                <strong>Kualitas Premium</strong>
-                                <span>Material terpilih, detail presisi, dan pengawasan ketat di setiap tahap konstruksi.</span>
-                            </div>
-                        </div>
-                        <div class="company-value-item">
-                            <div class="cvi-mark">✦</div>
-                            <div class="cvi-body">
-                                <strong>Kolaborasi Terbuka</strong>
-                                <span>Klien adalah mitra — visi Anda menjadi kompas utama proses desain kami.</span>
-                            </div>
-                        </div>
-                        <div class="company-value-item">
-                            <div class="cvi-mark">✦</div>
-                            <div class="cvi-body">
-                                <strong>Desain Berkelanjutan</strong>
-                                <span>Kami mengintegrasikan prinsip green architecture dalam setiap solusi desain kami.</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="company-cta-row">
-                        <a href="#contact" class="btn btn-primary">Mulai Proyek Anda</a>
-                        <a href="#services" class="company-link-secondary">Lihat Layanan Kami <span>→</span></a>
+    <!-- Portfolio Independent Section -->
+    <section id="portfolio-independent" class="portfolio-section portfolio-independent-section">
+        <div class="container-fluid">
+            <div class="portfolio-header" data-animate>
+                <div class="portfolio-header-left">
+                    <div class="section-label">Independent Work</div>
+                    <h2 class="section-title">Selected Independent Projects</h2>
+                    <div class="title-underline"></div>
+                </div>
+                <div class="portfolio-header-right-block">
+                    <p class="section-description" style="max-width:380px">Setiap proyek adalah studi mendalam tentang kebutuhan klien, konteks lokasi, dan solusi arsitektur yang dibuat khusus.</p>
+                    <div class="portfolio-filter-tags">
+                        <button class="filter-tag active" data-filter="all">All</button>
+                        <button class="filter-tag" data-filter="Design and Build">Design & Build</button>
+                        <button class="filter-tag" data-filter="Design Interior">Interior</button>
+                        <button class="filter-tag" data-filter="Maintenance">Maintenance</button>
                     </div>
                 </div>
+            </div>
 
-                <!-- RIGHT: Credentials + Awards -->
-                <div class="company-credentials" data-animate>
+            <div class="portfolio-scroll-wrapper">
+                <button class="portfolio-nav prev" id="independentPrev" aria-label="Previous">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18L9 12L15 6" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
 
-                    <div class="company-cred-header">
-                        <span class="section-label">Studio At a Glance</span>
-                    </div>
-
-                    <div class="company-cred-card-stack">
-                        <div class="cc-card cc-card--highlight">
-                            <div class="cc-card-icon">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                            </div>
-                            <div class="cc-card-content">
-                                <div class="cc-card-label">Established</div>
-                                <div class="cc-card-value">2022 · Jakarta Selatan</div>
-                            </div>
-                        </div>
-                        <div class="cc-card">
-                            <div class="cc-card-icon">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-                            </div>
-                            <div class="cc-card-content">
-                                <div class="cc-card-label">Principal Architect</div>
-                                <div class="cc-card-value">Rizky Maulana, M.Arch</div>
-                            </div>
-                        </div>
-                        <div class="cc-card">
-                            <div class="cc-card-icon">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                            </div>
-                            <div class="cc-card-content">
-                                <div class="cc-card-label">Specialization</div>
-                                <div class="cc-card-value">Luxury · Residential · Sustainable</div>
-                            </div>
-                        </div>
-                        <div class="cc-card">
-                            <div class="cc-card-icon">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
-                            </div>
-                            <div class="cc-card-content">
-                                <div class="cc-card-label">Service Area</div>
-                                <div class="cc-card-value">Jakarta · Banten · Jawa Barat & Sekitarnya</div>
-                            </div>
-                        </div>
-                        <div class="cc-card">
-                            <div class="cc-card-icon">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                            </div>
-                            <div class="cc-card-content">
-                                <div class="cc-card-label">Services Offered</div>
-                                <div class="cc-card-value">Architecture · Interior · Landscape · 3D Viz</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Testimonial Pull Quote -->
-                    <div class="company-quote-block">
-                        <div class="quote-mark">"</div>
-                        <p class="quote-text">Segariz mengubah visi kami menjadi hunian yang jauh melampaui ekspektasi awal — setiap detail terasa disengaja dan bermakna.</p>
-                        <div class="quote-attribution">
-                            <span class="quote-name">— Klien Residensial</span>
-                            <span class="quote-loc">Jakarta Selatan, 2022</span>
-                        </div>
-                    </div>
+                <div class="portfolio-horizontal-scroll" id="independentScroll">
+                    <div class="portfolio-horizontal-grid" id="portfolioIndependentGrid"></div>
                 </div>
+
+                <button class="portfolio-nav next" id="independentNext" aria-label="Next">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M9 18L15 12L9 6" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <div class="portfolio-divider"></div>
+
+    <!-- Portfolio Academic Section -->
+    <section id="portfolio-academic" class="portfolio-section portfolio-academic-section">
+        <div class="container-fluid">
+            <div class="portfolio-header" data-animate>
+                <div class="portfolio-header-left">
+                    <div class="section-label">Academic Work</div>
+                    <h2 class="section-title">Selected Academic Projects</h2>
+                    <div class="title-underline"></div>
+                </div>
+                <p class="section-description" style="max-width:380px">Innovative and high-quality academic achievements in architecture and design.</p>
+            </div>
+
+            <div class="portfolio-scroll-wrapper">
+                <button class="portfolio-nav prev" id="academicPrev" aria-label="Previous">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18L9 12L15 6" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+
+                <div class="portfolio-horizontal-scroll" id="academicScroll">
+                    <div class="portfolio-horizontal-grid" id="portfolioAcademicGrid"></div>
+                </div>
+
+                <button class="portfolio-nav next" id="academicNext" aria-label="Next">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M9 18L15 12L9 6" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
             </div>
         </div>
     </section>
@@ -269,9 +220,12 @@
                             <div class="portrait-bracket portrait-bracket--br"></div>
 
                             <div class="portrait-frame">
-                                <img src="media/Foto Profile.jpeg" alt="Rizky Maulana - Principal Architect"
-                                    loading="lazy" decoding="async"
-                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <picture>
+                                    <source srcset="media/Foto Profile.webp" type="image/webp">
+                                    <img src="media/Foto Profile.jpeg" alt="Rizky Maulana - Principal Architect"
+                                        decoding="async"
+                                        onerror="this.closest('picture').style.display='none'; this.closest('.portrait-frame').querySelector('.image-fallback').style.display='flex';">
+                                </picture>
                                 <div class="image-fallback" style="display: none;">
                                     <div class="fallback-icon">👤</div>
                                     <div class="fallback-text">Rizky Maulana</div>
@@ -352,64 +306,6 @@
             </div>
         </div>
     </section>
-
-    <div class="portfolio-divider"></div>
-
-    <!-- Philosophy Section -->
-    <section id="philosophy" class="philosophy-section">
-        <div class="container">
-            <div class="philosophy-intro" data-animate>
-                <div class="section-label">Our Philosophy</div>
-                <div class="philosophy-headline-wrap">
-                    <h2 class="philosophy-headline">Visi Konsisten,<br><em>Bentuk Abadi</em></h2>
-                    <div class="philosophy-rule"></div>
-                    <p class="philosophy-lead">Setiap garis yang kami tarik membawa niat. Setiap ruang yang kami rancang menanggung makna. Arsitektur bukan sekadar bangunan — ia adalah pernyataan waktu.</p>
-                </div>
-            </div>
-
-            <div class="philosophy-pillars" data-animate>
-                <div class="pillar-item">
-                    <div class="pillar-index">01</div>
-                    <div class="pillar-body">
-                        <h3 class="pillar-title">Karya Terbangun</h3>
-                        <p class="pillar-desc">Setiap proyek diselesaikan dalam satu garis visi yang sama, di mana fungsi, konteks, dan bentuk berpadu menjadi ruang yang bermakna.</p>
-                    </div>
-                    <div class="pillar-gold-dot"></div>
-                </div>
-                <div class="pillar-item">
-                    <div class="pillar-index">02</div>
-                    <div class="pillar-body">
-                        <h3 class="pillar-title">Perjalanan Desain</h3>
-                        <p class="pillar-desc">Perjalanan waktu membentuk ketajaman visi yang segaris, menjaga kualitas dan nilai arsitektur tetap utuh dari generasi ke generasi.</p>
-                    </div>
-                    <div class="pillar-gold-dot"></div>
-                </div>
-                <div class="pillar-item">
-                    <div class="pillar-index">03</div>
-                    <div class="pillar-body">
-                        <h3 class="pillar-title">Apresiasi Karya</h3>
-                        <p class="pillar-desc">Penghargaan adalah pengakuan atas konsistensi visi yang segaris, diwujudkan melalui keberanian mengeksplorasi bentuk tanpa kehilangan esensi.</p>
-                    </div>
-                    <div class="pillar-gold-dot"></div>
-                </div>
-                <div class="pillar-item">
-                    <div class="pillar-index">04</div>
-                    <div class="pillar-body">
-                        <h3 class="pillar-title">Kepercayaan Klien</h3>
-                        <p class="pillar-desc">Kepercayaan klien tumbuh dari proses yang segaris, ketika gagasan, kebutuhan, dan hasil akhir bertemu dalam harmoni.</p>
-                    </div>
-                    <div class="pillar-gold-dot"></div>
-                </div>
-            </div>
-
-            <div class="philosophy-cta-strip" data-animate>
-                <span class="strip-label">Siap mewujudkan visi Anda?</span>
-                <a href="#contact" class="strip-link">Mulai Percakapan <span class="strip-arrow">→</span></a>
-            </div>
-        </div>
-    </section>
-
-    <div class="portfolio-divider"></div>
 
     <!-- Services Section -->
     <section id="services" class="services-section">
@@ -600,84 +496,6 @@
         </div>
     </div>
 </section>
-
-    <div class="portfolio-divider"></div>
-
-    <!-- Portfolio Independent Section -->
-    <section id="portfolio-independent" class="portfolio-section portfolio-independent-section">
-        <div class="container-fluid">
-            <div class="portfolio-header" data-animate>
-                <div class="portfolio-header-left">
-                    <div class="section-label">Independent Work</div>
-                    <h2 class="section-title">Selected Independent Projects</h2>
-                    <div class="title-underline"></div>
-                </div>
-                <div class="portfolio-header-right-block">
-                    <p class="section-description" style="max-width:380px">Setiap proyek adalah studi mendalam tentang kebutuhan klien, konteks lokasi, dan solusi arsitektur yang dibuat khusus.</p>
-                    <div class="portfolio-filter-tags">
-                        <button class="filter-tag active" data-filter="all">All</button>
-                        <button class="filter-tag" data-filter="Design and Build">Design & Build</button>
-                        <button class="filter-tag" data-filter="Design Interior">Interior</button>
-                        <button class="filter-tag" data-filter="Maintenance">Maintenance</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="portfolio-scroll-wrapper">
-                <button class="portfolio-nav prev" id="independentPrev" aria-label="Previous">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M15 18L9 12L15 6" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </button>
-
-                <div class="portfolio-horizontal-scroll" id="independentScroll">
-                    <div class="portfolio-horizontal-grid" id="portfolioIndependentGrid"></div>
-                </div>
-
-                <button class="portfolio-nav next" id="independentNext" aria-label="Next">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M9 18L15 12L9 6" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <div class="portfolio-divider"></div>
-
-    <!-- Portfolio Academic Section -->
-    <section id="portfolio-academic" class="portfolio-section portfolio-academic-section">
-        <div class="container-fluid">
-            <div class="portfolio-header" data-animate>
-                <div class="portfolio-header-left">
-                    <div class="section-label">Academic Work</div>
-                    <h2 class="section-title">Selected Academic Projects</h2>
-                    <div class="title-underline"></div>
-                </div>
-                <p class="section-description" style="max-width:380px">Innovative and high-quality academic achievements in architecture and design.</p>
-            </div>
-
-            <div class="portfolio-scroll-wrapper">
-                <button class="portfolio-nav prev" id="academicPrev" aria-label="Previous">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M15 18L9 12L15 6" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </button>
-
-                <div class="portfolio-horizontal-scroll" id="academicScroll">
-                    <div class="portfolio-horizontal-grid" id="portfolioAcademicGrid"></div>
-                </div>
-
-                <button class="portfolio-nav next" id="academicNext" aria-label="Next">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M9 18L15 12L9 6" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <div class="portfolio-divider"></div>
 
     <!-- Project Detail Panel -->
 <div class="project-detail-backdrop" id="projectDetailBackdrop"></div>
@@ -937,10 +755,10 @@
                         <h4 class="footer-col-title">Navigate</h4>
                         <ul>
                             <li><a href="#home">Home</a></li>
-                            <li><a href="#company">Company</a></li>
+                            <li><a href="#portfolio-independent">Independent Projects</a></li>
+                            <li><a href="#portfolio-academic">Academic Projects</a></li>
                             <li><a href="#about">About</a></li>
                             <li><a href="#services">Services</a></li>
-                            <li><a href="#portfolio-independent">Independent Projects</a></li>
                             <li><a href="#contact">Contact</a></li>
                         </ul>
                     </div>

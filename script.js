@@ -162,19 +162,15 @@ function setupPortfolioNavigation(scrollId, prevId, nextId) {
     const nextBtn = document.getElementById(nextId);
     
     if (!scroll || !prevBtn || !nextBtn) return;
+
+    const getScrollAmount = () => Math.min(scroll.clientWidth * 0.8, 450);
     
     prevBtn.addEventListener('click', () => {
-        scroll.scrollBy({
-            left: -450,
-            behavior: 'smooth'
-        });
+        scroll.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
     });
     
     nextBtn.addEventListener('click', () => {
-        scroll.scrollBy({
-            left: 450,
-            behavior: 'smooth'
-        });
+        scroll.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
     });
 }
 
@@ -195,6 +191,7 @@ const elements = {
     navbar: document.getElementById('navbar'),
     menuToggle: document.getElementById('menuToggle'),
     navMenu: document.getElementById('navMenu'),
+    navOverlay: document.getElementById('navOverlay'),
     navLinks: document.querySelectorAll('.nav-link'),
     projectDetailPanel: document.getElementById('projectDetailPanel'),
     panelClose: document.getElementById('panelClose'),
@@ -246,46 +243,86 @@ setTimeout(hidePreloader, 3000);
 // ============================================
 let lastScroll = 0;
 
+// Single unified scroll handler for all scroll-based effects
 window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-    
-    // Navbar scroll effect
-    if (elements.navbar) {
-        if (currentScroll > 100) {
-            elements.navbar.classList.add('scrolled');
-        } else {
-            elements.navbar.classList.remove('scrolled');
-        }
+    if (!ticking) {
+        window.requestAnimationFrame(() => {
+            const currentScroll = window.pageYOffset;
+
+            // Navbar scroll effect
+            if (elements.navbar) {
+                if (currentScroll > 100) {
+                    elements.navbar.classList.add('scrolled');
+                } else {
+                    elements.navbar.classList.remove('scrolled');
+                }
+            }
+
+            // Back to top button
+            if (elements.backToTop) {
+                if (currentScroll > 500) {
+                    elements.backToTop.classList.add('visible');
+                } else {
+                    elements.backToTop.classList.remove('visible');
+                }
+            }
+
+            // Parallax for hero shapes
+            const hero = document.querySelector('.hero');
+            if (hero && currentScroll < window.innerHeight) {
+                const shapes = document.querySelectorAll('.shape');
+                shapes.forEach((shape, index) => {
+                    const speed = 0.5 + (index * 0.2);
+                    shape.style.transform = `translateY(${currentScroll * speed}px) rotate(${45 + currentScroll * 0.05}deg)`;
+                });
+            }
+
+            lastScroll = currentScroll;
+            ticking = false;
+        });
+        ticking = true;
     }
-    
-    // Back to top button
-    if (elements.backToTop) {
-        if (currentScroll > 500) {
-            elements.backToTop.classList.add('visible');
-        } else {
-            elements.backToTop.classList.remove('visible');
-        }
-    }
-    
-    lastScroll = currentScroll;
-});
+}, { passive: true });
 
 // Mobile menu toggle
+// ============================================
+// MOBILE MENU HELPERS
+// ============================================
+function openMenu() {
+    if (!elements.navMenu || !elements.menuToggle) return;
+    elements.navMenu.classList.add('active');
+    elements.menuToggle.setAttribute('aria-expanded', 'true');
+    if (elements.navOverlay) elements.navOverlay.classList.add('active');
+    const spans = elements.menuToggle.querySelectorAll('span');
+    spans[0].style.transform = 'rotate(45deg) translateY(10px)';
+    spans[1].style.opacity = '0';
+    spans[2].style.transform = 'rotate(-45deg) translateY(-10px)';
+}
+
+function closeMenu() {
+    if (!elements.navMenu || !elements.menuToggle) return;
+    elements.navMenu.classList.remove('active');
+    elements.menuToggle.setAttribute('aria-expanded', 'false');
+    if (elements.navOverlay) elements.navOverlay.classList.remove('active');
+    const spans = elements.menuToggle.querySelectorAll('span');
+    spans[0].style.transform = 'none';
+    spans[1].style.opacity = '1';
+    spans[2].style.transform = 'none';
+}
+
 if (elements.menuToggle && elements.navMenu) {
     elements.menuToggle.addEventListener('click', () => {
-        elements.navMenu.classList.toggle('active');
-        
-        const spans = elements.menuToggle.querySelectorAll('span');
         if (elements.navMenu.classList.contains('active')) {
-            spans[0].style.transform = 'rotate(45deg) translateY(10px)';
-            spans[1].style.opacity = '0';
-            spans[2].style.transform = 'rotate(-45deg) translateY(-10px)';
+            closeMenu();
         } else {
-            spans[0].style.transform = 'none';
-            spans[1].style.opacity = '1';
-            spans[2].style.transform = 'none';
+            openMenu();
         }
     });
+}
+
+// Close menu when clicking overlay
+if (elements.navOverlay) {
+    elements.navOverlay.addEventListener('click', closeMenu);
 }
 
 // Close menu when clicking nav link
@@ -296,13 +333,7 @@ elements.navLinks.forEach(link => {
         const targetSection = document.querySelector(targetId);
         
         // Close mobile menu
-        if (elements.navMenu) {
-            elements.navMenu.classList.remove('active');
-            const spans = elements.menuToggle.querySelectorAll('span');
-            spans[0].style.transform = 'none';
-            spans[1].style.opacity = '1';
-            spans[2].style.transform = 'none';
-        }
+        closeMenu();
         
         // Smooth scroll
         if (targetSection && elements.navbar) {
@@ -317,40 +348,68 @@ elements.navLinks.forEach(link => {
 document.addEventListener('click', (e) => {
     if (elements.navMenu && elements.menuToggle && 
         !elements.navMenu.contains(e.target) && 
-        !elements.menuToggle.contains(e.target) && 
+        !elements.menuToggle.contains(e.target) &&
+        !(elements.navOverlay && elements.navOverlay.contains(e.target)) &&
         elements.navMenu.classList.contains('active')) {
-        elements.navMenu.classList.remove('active');
-        const spans = elements.menuToggle.querySelectorAll('span');
-        spans[0].style.transform = 'none';
-        spans[1].style.opacity = '1';
-        spans[2].style.transform = 'none';
+        closeMenu();
     }
 });
 
 // ============================================
-// LAZY IMAGE LOADING
+// IMAGE UTILITIES — No lazy loading, WebP+JPG fallback
 // ============================================
-const lazyImageObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const img = entry.target;
-            const src = img.getAttribute('data-src');
-            if (src) {
-                img.src = src;
-                img.removeAttribute('data-src');
-                img.classList.remove('lazy-img');
-            }
-            lazyImageObserver.unobserve(img);
-        }
-    });
-}, {
-    rootMargin: '200px 0px', // start loading 200px before entering viewport
-    threshold: 0.01
-});
 
+// Helper: convert any image path to WebP equivalent
+function toWebp(src) {
+    return src.replace(/\.(jpg|jpeg|png)$/i, '.webp');
+}
+
+// Helper: convert any image path to JPG equivalent
+function toJpg(src) {
+    return src.replace(/\.(webp|png)$/i, '.jpg');
+}
+
+// Build a <picture> element with WebP source + original fallback
+function buildPicture(src, alt, className) {
+    const ext = src.split('.').pop().toLowerCase();
+    let webpSrc, fallbackSrc;
+
+    if (ext === 'webp') {
+        webpSrc     = src;
+        fallbackSrc = toJpg(src);
+    } else if (ext === 'jpg' || ext === 'jpeg') {
+        webpSrc     = toWebp(src);
+        fallbackSrc = src;
+    } else {
+        // .png or other — try webp but always fall back to original src
+        webpSrc     = toWebp(src);
+        fallbackSrc = src;  // keep original (.png) as fallback
+    }
+
+    const picture = document.createElement('picture');
+
+    const sourceWebp = document.createElement('source');
+    sourceWebp.setAttribute('srcset', webpSrc);
+    sourceWebp.setAttribute('type', 'image/webp');
+    picture.appendChild(sourceWebp);
+
+    const img = document.createElement('img');
+    img.src   = src;           // UTAMA: file asli langsung (.webp/.jpg/.png)
+    img.alt   = alt || '';
+    if (className) img.className = className;
+    img.setAttribute('decoding', 'async');
+    img.onerror = function() {
+        this.onerror = null;
+        this.src = fallbackSrc;
+    };
+    picture.appendChild(img);
+
+    return picture;
+}
+
+// Kept for backward compat — no-op since we no longer lazy load
 function observeLazyImages(container) {
-    const lazyImgs = container ? container.querySelectorAll('img.lazy-img') : document.querySelectorAll('img.lazy-img');
-    lazyImgs.forEach(img => lazyImageObserver.observe(img));
+    // Intentionally empty: lazy loading removed per requirement
 }
 
 // ============================================
@@ -372,29 +431,7 @@ const observer = new IntersectionObserver((entries) => {
 const animateElements = document.querySelectorAll('[data-animate]');
 animateElements.forEach(el => observer.observe(el));
 
-// ============================================
-// PARALLAX EFFECT
-// ============================================
-window.addEventListener('scroll', () => {
-    if (!ticking) {
-        window.requestAnimationFrame(() => {
-            const scrolled = window.pageYOffset;
-            const hero = document.querySelector('.hero');
-            
-            if (hero && scrolled < window.innerHeight) {
-                const shapes = document.querySelectorAll('.shape');
-                shapes.forEach((shape, index) => {
-                    const speed = 0.5 + (index * 0.2);
-                    shape.style.transform = `translateY(${scrolled * speed}px) rotate(${45 + scrolled * 0.05}deg)`;
-                });
-            }
-            
-            ticking = false;
-        });
-        
-        ticking = true;
-    }
-});
+// Parallax is now handled inside the unified scroll listener above
 
 // ============================================
 // PORTFOLIO HORIZONTAL GALLERY
@@ -409,32 +446,56 @@ function generatePortfolioHorizontal(projects, gridId, portfolioType) {
         const portfolioCard = document.createElement('div');
         portfolioCard.className = 'portfolio-horizontal-card';
         portfolioCard.setAttribute('data-animate', '');
-        
-        portfolioCard.innerHTML = `
-            <div class="portfolio-horizontal-image">
-                <div class="portfolio-horizontal-overlay">
-                    <div class="portfolio-horizontal-overlay-text">View Details</div>
-                </div>
-                <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" 
-                     data-src="${project.thumbnail}" 
-                     alt="${project.title}" 
-                     loading="lazy"
-                     class="lazy-img"
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="portfolio-horizontal-image-placeholder" style="display: none;">
-                    <div class="horizontal-placeholder-icon">${getCategoryIcon(project.category)}</div>
-                </div>
-            </div>
-            <div class="portfolio-horizontal-info">
-                <div class="portfolio-horizontal-category">${project.category}</div>
-                <h3 class="portfolio-horizontal-title">${project.title}</h3>
-                <p class="portfolio-horizontal-count">${project.images.length} ${project.images.length > 1 ? 'Images' : 'Image'}</p>
-            </div>
+
+        // Build image container using <picture> for WebP+JPG fallback
+        const imageWrapper = document.createElement('div');
+        imageWrapper.className = 'portfolio-horizontal-image';
+
+        // Overlay (View Details)
+        const overlay = document.createElement('div');
+        overlay.className = 'portfolio-horizontal-overlay';
+        overlay.innerHTML = `<div class="portfolio-horizontal-overlay-text">View Details</div>`;
+        imageWrapper.appendChild(overlay);
+
+        // Thumbnail card — file asli utama, fallback ke .jpg
+        const cardImg = document.createElement('img');
+        cardImg.src = project.thumbnail;    // UTAMA: .jpg/.webp/.png
+        cardImg.alt = project.title;
+        cardImg.setAttribute('decoding', 'async');
+
+        const placeholder = document.createElement('div');
+        placeholder.className = 'portfolio-horizontal-image-placeholder';
+        placeholder.style.display = 'none';
+        placeholder.innerHTML = `<div class="horizontal-placeholder-icon">${getCategoryIcon(project.category)}</div>`;
+
+        cardImg.onerror = function() {
+            const jpg = project.thumbnail.replace(/\.webp$/i, '.jpg');
+            if (this.src.indexOf(jpg) === -1) {
+                this.onerror = null;
+                this.src = jpg;             // FALLBACK: .jpg
+            } else {
+                this.style.display = 'none';
+                placeholder.style.display = 'flex';
+            }
+        };
+
+        imageWrapper.appendChild(cardImg);
+        imageWrapper.appendChild(placeholder);
+
+        // Info (minimal text — just category + title)
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'portfolio-horizontal-info';
+        infoDiv.innerHTML = `
+            <div class="portfolio-horizontal-category">${project.category}</div>
+            <h3 class="portfolio-horizontal-title">${project.title}</h3>
+            <p class="portfolio-horizontal-count">${project.images.length} ${project.images.length > 1 ? 'Photos' : 'Photo'}</p>
         `;
-        
+
+        portfolioCard.appendChild(imageWrapper);
+        portfolioCard.appendChild(infoDiv);
         portfolioGrid.appendChild(portfolioCard);
-        
-        // Add click event — mobile-aware
+
+        // Click event — mobile-aware
         portfolioCard.addEventListener('click', () => {
             if (window.innerWidth <= 768 && typeof openMobPanel === 'function') {
                 openMobPanel(portfolioType, projectIndex);
@@ -443,13 +504,10 @@ function generatePortfolioHorizontal(projects, gridId, portfolioType) {
             }
         });
     });
-    
-    // Re-observe new elements
+
+    // Re-observe new elements for scroll animations
     const newAnimateElements = portfolioGrid.querySelectorAll('[data-animate]');
     newAnimateElements.forEach(el => observer.observe(el));
-
-    // Observe lazy images in newly generated cards
-    observeLazyImages(portfolioGrid);
 }
 
 // ============================================
@@ -509,11 +567,18 @@ function updatePanelContent() {
     if (currentImageEl) currentImageEl.textContent = currentImageIndex + 1;
     if (totalImagesEl) totalImagesEl.textContent = project.images.length;
     
-    // Update Main Image
+    // Update Main Image — file asli sebagai utama, fallback ke .jpg via onerror
     const panelMainImage = document.getElementById('panelMainImage');
     if (panelMainImage) {
-        panelMainImage.src = project.images[currentImageIndex];
+        const src = project.images[currentImageIndex];
+        panelMainImage.onerror = null;
+        panelMainImage.src = src;       // UTAMA: .webp / .jpg / .png
         panelMainImage.alt = `${project.title} - Image ${currentImageIndex + 1}`;
+        panelMainImage.style.display = '';
+        panelMainImage.onerror = function() {
+            this.onerror = null;
+            this.src = src.replace(/\.webp$/i, '.jpg');  // FALLBACK: .jpg
+        };
     }
     
     // Update Project Title
@@ -556,12 +621,17 @@ function generatePanelThumbnails() {
     project.images.forEach((image, index) => {
         const thumbnail = document.createElement('div');
         thumbnail.className = `panel-thumbnail ${index === currentImageIndex ? 'active' : ''}`;
-        // First thumbnail loads immediately (active), rest are lazy
-        if (index === 0) {
-            thumbnail.innerHTML = `<img src="${image}" alt="${project.title} ${index + 1}">`;
-        } else {
-            thumbnail.innerHTML = `<img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="${image}" alt="${project.title} ${index + 1}" class="lazy-img">`;
-        }
+
+        const tImg = document.createElement('img');
+        tImg.src = image;               // UTAMA: file asli (.webp/.jpg/.png)
+        tImg.alt = `${project.title} ${index + 1}`;
+        tImg.setAttribute('decoding', 'async');
+        tImg.onerror = function() {     // FALLBACK: .jpg kalau utama gagal
+            this.onerror = null;
+            this.src = image.replace(/\.webp$/i, '.jpg');
+        };
+        thumbnail.appendChild(tImg);
+
         thumbnail.addEventListener('click', () => {
             currentImageIndex = index;
             updatePanelContent();
@@ -569,8 +639,6 @@ function generatePanelThumbnails() {
         });
         thumbnailsContainer.appendChild(thumbnail);
     });
-
-    observeLazyImages(thumbnailsContainer);
 }
 
 function showPrevImage() {
@@ -840,11 +908,7 @@ if (newsletterForm) {
 // ============================================
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && elements.navMenu && elements.navMenu.classList.contains('active')) {
-        elements.navMenu.classList.remove('active');
-        const spans = elements.menuToggle.querySelectorAll('span');
-        spans[0].style.transform = 'none';
-        spans[1].style.opacity = '1';
-        spans[2].style.transform = 'none';
+        closeMenu();
     }
 });
 
@@ -857,19 +921,15 @@ function setupServicesNavigation() {
     const nextBtn = document.getElementById('servicesNext');
     
     if (!scroll || !prevBtn || !nextBtn) return;
-    
+
+    const getScrollAmount = () => Math.min(scroll.clientWidth * 0.8, 450);
+
     prevBtn.addEventListener('click', () => {
-        scroll.scrollBy({
-            left: -450,
-            behavior: 'smooth'
-        });
+        scroll.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
     });
     
     nextBtn.addEventListener('click', () => {
-        scroll.scrollBy({
-            left: 450,
-            behavior: 'smooth'
-        });
+        scroll.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
     });
 }
 
@@ -1108,12 +1168,38 @@ function mobRender() {
     if (elCur) elCur.textContent = mobImgIndex + 1;
     if (elTot) elTot.textContent = total;
 
-    /* ── Hero image — fade swap ── */
+    /* ── Hero image — fade swap with picture fallback ── */
+    const heroDiv = document.getElementById('mobHero');
     const img = document.getElementById('mobPhotoImg');
     if (img) {
         img.classList.add('mob-fading');
         setTimeout(() => {
-            img.src = p.images[mobImgIndex];
+            const heroSrc = p.images[mobImgIndex];
+            const ext = heroSrc.split('.').pop().toLowerCase();
+            let webpSrc, fallbackSrc;
+            if (ext === 'webp') { webpSrc = heroSrc; fallbackSrc = toJpg(heroSrc); }
+            else { webpSrc = toWebp(heroSrc); fallbackSrc = heroSrc; }
+
+            // If wrapped in <picture>, update source too
+            const picture = img.closest ? img.closest('picture') : null;
+            if (picture) {
+                const source = picture.querySelector('source[type="image/webp"]');
+                if (source) source.setAttribute('srcset', webpSrc);
+            }
+
+            // Set onerror fallback BEFORE setting src
+            img.onerror = function() {
+                this.onerror = null;
+                // fallback: untuk .webp coba .jpg, untuk .png tetap pakai src asli
+                if (ext === 'webp') {
+                    this.src = fallbackSrc; // .jpg
+                } else {
+                    this.src = heroSrc; // tetap src asli (.png)
+                }
+            };
+
+            // Always try the original src first (webp, jpg, or png as-is)
+            img.src = heroSrc;
             img.alt = `${p.title} — foto ${mobImgIndex + 1}`;
             img.classList.remove('mob-fading');
         }, 160);
@@ -1141,18 +1227,26 @@ function mobRender() {
     if (metaYear)     metaYear.textContent     = p.year;
     if (metaPhotos)   metaPhotos.textContent   = `${total}`;
 
-    /* ── Tabstrip — rebuild thumbnail tabs ── */
+    /* ── Tabstrip — rebuild thumbnail tabs, no lazy loading ── */
     const strip = document.getElementById('mobTabstrip');
     if (strip) {
         strip.innerHTML = '';
         p.images.forEach((src, i) => {
             const tab = document.createElement('div');
             tab.className = 'mob-tab' + (i === mobImgIndex ? ' mob-tab-active' : '');
-            const im = document.createElement('img');
-            im.src     = src;
-            im.alt     = `${p.title} ${i + 1}`;
-            im.loading = i === 0 ? 'eager' : 'lazy';
-            tab.appendChild(im);
+
+            // Simple img — lebih reliable dari <picture> untuk thumbnail kecil
+            const tImg = document.createElement('img');
+            tImg.src = src;
+            tImg.alt = `${p.title} ${i + 1}`;
+            tImg.setAttribute('decoding', 'async');
+            tImg.onerror = function() {
+                this.onerror = null;
+                // coba fallback jpg kalau webp gagal, atau png tetap asli
+                const ext = src.split('.').pop().toLowerCase();
+                if (ext === 'webp') this.src = toJpg(src);
+            };
+            tab.appendChild(tImg);
             tab.addEventListener('click', () => mobGoTo(i));
             strip.appendChild(tab);
         });
@@ -1286,7 +1380,6 @@ const filterTags = document.querySelectorAll('.filter-tag');
 
 filterTags.forEach(btn => {
     btn.addEventListener('click', () => {
-        // Update active state
         filterTags.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
@@ -1296,15 +1389,23 @@ filterTags.forEach(btn => {
         cards.forEach(card => {
             const category = card.getAttribute('data-category') || '';
             const show = filter === 'all' || category === filter;
-            card.style.transition = 'opacity 0.3s, transform 0.3s';
             if (show) {
-                card.style.opacity = '1';
-                card.style.transform = 'scale(1)';
-                card.style.pointerEvents = 'auto';
+                card.style.display = '';
+                // Animate in
+                requestAnimationFrame(() => {
+                    card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'scale(1)';
+                    card.style.pointerEvents = 'auto';
+                });
             } else {
-                card.style.opacity = '0.2';
-                card.style.transform = 'scale(0.97)';
+                card.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.96)';
                 card.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    if (card.style.opacity === '0') card.style.display = 'none';
+                }, 260);
             }
         });
     });
