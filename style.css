@@ -475,12 +475,16 @@ body {
 
 .hero-buttons {
     display: flex;
-    gap: 20px;
+    gap: 16px;
     justify-content: center;
     opacity: 0;
     animation: fadeInUp 1s ease 1s forwards;
-    flex-wrap: wrap;
-    margin-bottom: 24px;
+    margin-bottom: 0;
+}
+
+.hero-buttons .btn {
+    min-width: 180px;
+    justify-content: center;
 }
 
 
@@ -541,58 +545,43 @@ body {
     transform: translateY(-2px);
 }
 
-/* WhatsApp Button */
-.whatsapp-button-container {
+/* ====================================
+   Floating WhatsApp Button
+   ==================================== */
+.whatsapp-button-container { display: none; }
+
+.wa-float {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 998;
     display: flex;
-    justify-content: center;
-    opacity: 0;
-    animation: fadeInUp 1s ease 1.2s forwards;
+    align-items: center;
+    gap: 10px;
+    background: #25D366;
+    color: #fff;
+    padding: 13px 20px 13px 16px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-family: var(--font-primary);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    box-shadow: 0 6px 24px rgba(37,211,102,0.4);
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    white-space: nowrap;
 }
 
-.btn-whatsapp {
-    background: var(--gold);
-    color: var(--black);
-    position: relative;
-    overflow: hidden;
-}
-
-.btn-whatsapp::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
+.wa-float:hover {
     background: #128C7E;
-    transition: var(--transition-fast);
-    z-index: 0;
-}
-
-.btn-whatsapp:hover::before {
-    left: 0;
-}
-
-.btn-whatsapp:hover {
-    color: var(--white);
     transform: translateY(-3px);
-    box-shadow: 0 10px 40px rgba(37, 211, 102, 0.4);
+    box-shadow: 0 12px 36px rgba(37,211,102,0.5);
 }
 
-.btn-whatsapp span,
-.btn-whatsapp .whatsapp-icon {
-    position: relative;
-    z-index: 1;
-}
-
-.whatsapp-icon {
-    width: 24px;
-    height: 24px;
-    transition: var(--transition-fast);
-}
-
-.btn-whatsapp:hover .whatsapp-icon {
-    transform: scale(1.1) rotate(5deg);
-}
+.wa-float svg { flex-shrink: 0; transition: transform 0.3s ease; }
+.wa-float:hover svg { transform: scale(1.1) rotate(5deg); }
+.wa-label { line-height: 1; }
 
 .scroll-down {
     position: absolute;
@@ -3217,33 +3206,42 @@ img:not(.lazy-img) {
 
     .hero-description {
         font-size: 15px;
-        margin-bottom: 36px;
+        margin-bottom: 32px;
         padding: 0 10px;
     }
 
     .hero-buttons {
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 18px;
+        flex-direction: row;
+        gap: 10px;
+        margin-bottom: 0;
         width: 100%;
-    }
-
-    .hero-buttons .btn,
-    .btn-whatsapp {
-        width: 100%;
-        max-width: 280px;
-        padding: 14px 24px;
-        font-size: 10px;
-        letter-spacing: 2.5px;
         justify-content: center;
     }
 
-    .whatsapp-button-container {
-        width: 100%;
-        display: flex;
+    .hero-buttons .btn {
+        flex: 1;
+        max-width: 155px;
+        min-width: 0;
+        padding: 14px 10px;
+        font-size: 9px;
+        letter-spacing: 1.5px;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .whatsapp-button-container { display: none; }
+
+    /* Floating WA mobile — ikon bulat saja */
+    .wa-float {
+        bottom: 18px;
+        right: 16px;
+        padding: 15px;
+        border-radius: 50%;
+        width: 54px;
+        height: 54px;
         justify-content: center;
     }
+    .wa-label { display: none; }
 
     .scroll-down {
         display: none;
@@ -3620,17 +3618,10 @@ img:not(.lazy-img) {
         margin-bottom: 30px;
     }
 
-    .hero-buttons .btn,
-    .btn-whatsapp {
-        max-width: 240px;
-        padding: 13px 20px;
-        font-size: 10px;
-    }
-
-    .whatsapp-icon {
-        width: 18px;
-        height: 18px;
-        flex-shrink: 0;
+    .hero-buttons .btn {
+        max-width: 155px;
+        padding: 13px 10px;
+        font-size: 9.5px;
     }
 
     /* About */
