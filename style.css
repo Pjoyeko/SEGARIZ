@@ -40,6 +40,8 @@
 
 a, button, [role="button"] {
     touch-action: manipulation;
+    /* Hapus highlight biru/abu saat tap di semua browser mobile */
+    -webkit-tap-highlight-color: transparent;
 }
 
 html {
@@ -1259,11 +1261,10 @@ section {
     background: transparent;
     border: 1px solid rgba(201, 169, 110, 0.1);
     padding: 44px 36px;
-    /* JANGAN pakai transition: all — bikin reflow/geter */
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                border-color 0.4s ease,
-                background 0.4s ease,
-                box-shadow 0.4s ease;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.35s ease,
+                background 0.35s ease,
+                box-shadow 0.35s ease;
     position: relative;
     overflow: hidden;
     min-height: 460px;
@@ -1271,6 +1272,8 @@ section {
     flex-direction: column;
     scroll-snap-align: start;
     scroll-snap-stop: always;
+    will-change: transform;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .service-card-horizontal::before {
@@ -1282,15 +1285,18 @@ section {
     height: 1px;
     background: linear-gradient(90deg, var(--gold), transparent);
     transform: scaleX(0);
-    transition: transform 0.5s ease;
+    transition: transform 0.4s ease;
     transform-origin: left;
+    /* Pseudo-element juga perlu GPU hint */
+    will-change: transform;
 }
 
 .service-card-horizontal:hover {
-    transform: translateY(-8px);
-    border-color: rgba(201, 169, 110, 0.3);
-    background: rgba(201, 169, 110, 0.03);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    transform: translateY(-6px);
+    border-color: rgba(201, 169, 110, 0.25);
+    background: rgba(201, 169, 110, 0.02);
+    /* Shadow lebih ringan */
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
 }
 
 .service-card-horizontal:hover::before {
@@ -1422,12 +1428,12 @@ section {
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
-    /* Lock horizontal pan — cegah scroll vertikal conflict */
-    touch-action: pan-x;
-    /* Sembunyikan scrollbar di semua browser */
+    /* Tidak perlu touch-action: pan-x — malah block scroll vertikal halaman */
     scrollbar-width: none;
     -ms-overflow-style: none;
     padding: 8px 0 32px;
+    scroll-padding-left: 40px;
+    will-change: scroll-position;
 }
 
 .portfolio-horizontal-scroll::-webkit-scrollbar {
@@ -1443,26 +1449,29 @@ section {
 }
 
 .portfolio-horizontal-card {
-    /* Lebar eksplisit di kedua property — cegah reflow/geter */
     flex: 0 0 340px;
     width: 340px;
     background: var(--black);
     border: 1px solid rgba(201, 169, 110, 0.1);
-    /* Hanya animasi transform & shadow, bukan dimensi */
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                border-color 0.4s ease;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.35s ease;
     cursor: pointer;
     overflow: hidden;
     position: relative;
     scroll-snap-align: start;
     scroll-snap-stop: always;
+    /* GPU compositing — elemen ini akan dianimasi */
+    will-change: transform;
+    /* Hapus highlight biru/abu saat tap di mobile */
+    -webkit-tap-highlight-color: transparent;
 }
 
 .portfolio-horizontal-card:hover {
-    border-color: rgba(201, 169, 110, 0.35);
-    transform: translateY(-6px);
-    box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,169,110,0.15);
+    border-color: rgba(201, 169, 110, 0.3);
+    transform: translateY(-4px);
+    /* Shadow lebih ringan — tidak trigger repaint berat */
+    box-shadow: 0 16px 40px rgba(0,0,0,0.4);
 }
 
 .portfolio-horizontal-image {
@@ -1476,8 +1485,10 @@ section {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: transform;
+    /* Pastiin tidak ada layout property yang berubah */
+    display: block;
 }
 
 .portfolio-horizontal-card:hover .portfolio-horizontal-image img {
@@ -3474,6 +3485,11 @@ img:not(.lazy-img) {
         gap: 14px;
     }
 
+    /* scroll-padding sesuaikan dengan padding grid mobile */
+    .portfolio-horizontal-scroll {
+        scroll-padding-left: 20px;
+    }
+
     .portfolio-horizontal-card {
         flex: 0 0 280px;
         width: 280px;
@@ -4001,11 +4017,14 @@ img:not(.lazy-img) {
     .mob-hero-img {
         width: 100%;
         height: 100%;
-        object-fit: contain;        /* ← kunci: gambar tidak terpotong */
+        object-fit: contain;
         display: block;
         user-select: none;
         -webkit-user-drag: none;
-        transition: opacity .2s ease;
+        transition: opacity .18s ease;
+        will-change: opacity;
+        /* Cegah layout shift saat gambar load */
+        backface-visibility: hidden;
     }
 
     .mob-hero-img.mob-fading { opacity: 0; }
@@ -4857,26 +4876,50 @@ img:not(.lazy-img) {
    that can get "stuck" on mobile
    ==================================== */
 @media (hover: none) and (pointer: coarse) {
+    /* Portfolio cards */
     .portfolio-horizontal-card:hover {
         transform: none;
         box-shadow: none;
         border-color: rgba(201, 169, 110, 0.1);
     }
 
+    .portfolio-horizontal-card:hover .portfolio-horizontal-image img {
+        transform: none;
+    }
+
+    .portfolio-horizontal-card:hover .portfolio-horizontal-overlay {
+        opacity: 0;
+    }
+
+    /* Subtle active feedback (tap) instead of hover */
+    .portfolio-horizontal-card:active {
+        border-color: rgba(201, 169, 110, 0.3);
+        background: rgba(201, 169, 110, 0.03);
+    }
+
+    /* Service cards */
     .service-card-horizontal:hover {
         transform: none;
         box-shadow: none;
+        background: transparent;
+        border-color: rgba(201, 169, 110, 0.1);
     }
 
     .service-card-horizontal:hover::before {
         transform: scaleX(0);
     }
 
-    .portfolio-horizontal-card:active {
-        border-color: rgba(201, 169, 110, 0.35);
-        background: rgba(201, 169, 110, 0.04);
+    .service-card-horizontal:hover .service-icon {
+        transform: none;
+        opacity: 0.7;
     }
 
+    .service-card-horizontal:active {
+        border-color: rgba(201, 169, 110, 0.25);
+        background: rgba(201, 169, 110, 0.02);
+    }
+
+    /* Buttons */
     .btn:hover {
         transform: none;
     }
@@ -4889,6 +4932,12 @@ img:not(.lazy-img) {
     .btn-secondary:hover {
         background: var(--gold);
         color: var(--black);
+    }
+
+    /* Setelah tidak ada interaksi, release GPU layer */
+    .portfolio-horizontal-card,
+    .service-card-horizontal {
+        will-change: auto;
     }
 }
 
