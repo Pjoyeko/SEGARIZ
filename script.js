@@ -168,7 +168,11 @@ function setupPortfolioNavigation(scrollId, prevId, nextId) {
     const getCardWidth = () => {
         const card = scroll.querySelector('.portfolio-horizontal-card');
         if (!card) return scroll.clientWidth * 0.8;
-        return card.offsetWidth + parseInt(getComputedStyle(scroll).gap || 0);
+        const cards = scroll.querySelectorAll('.portfolio-horizontal-card');
+        if (cards.length >= 2) {
+            return cards[1].getBoundingClientRect().left - cards[0].getBoundingClientRect().left;
+        }
+        return card.offsetWidth + 24;
     };
 
     if (prevBtn) prevBtn.addEventListener('click', () => {

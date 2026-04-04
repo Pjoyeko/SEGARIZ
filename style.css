@@ -1259,7 +1259,7 @@ section {
     background: transparent;
     border: 1px solid rgba(201, 169, 110, 0.1);
     padding: 48px 40px;
-    transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
     position: relative;
     overflow: hidden;
     min-height: 480px;
@@ -1267,6 +1267,7 @@ section {
     flex-direction: column;
     scroll-snap-align: start;
     scroll-snap-stop: always;
+    will-change: transform;
 }
 
 .service-card-horizontal::before {
@@ -1397,10 +1398,8 @@ section {
 .portfolio-horizontal-scroll {
     overflow-x: auto;
     overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
     scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    touch-action: pan-x;
+    touch-action: pan-x pinch-zoom;
     scrollbar-width: thin;
     scrollbar-color: rgba(201,169,110,0.4) transparent;
     padding: 20px 0 40px;
@@ -1426,8 +1425,8 @@ section {
 .portfolio-horizontal-grid {
     display: flex;
     gap: 24px;
+    width: max-content;
     padding: 0 40px;
-    min-width: min-content;
 }
 
 .portfolio-horizontal-card {
@@ -1435,12 +1434,13 @@ section {
     width: 360px;
     background: var(--black);
     border: 1px solid rgba(201, 169, 110, 0.1);
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
     cursor: pointer;
     overflow: hidden;
     position: relative;
     scroll-snap-align: start;
     scroll-snap-stop: always;
+    will-change: transform;
 }
 
 .portfolio-horizontal-card:hover {
@@ -2880,66 +2880,6 @@ section {
 /* ====================================
    Back to Top Button
    ==================================== */
-/* ====================================
-   Floating WhatsApp Button
-   ==================================== */
-.wa-float {
-    position: fixed;
-    bottom: 28px;
-    right: 28px;
-    z-index: 997;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: #25D366;
-    color: #fff;
-    padding: 13px 20px 13px 16px;
-    border-radius: 50px;
-    text-decoration: none;
-    font-family: var(--font-primary);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1.8px;
-    text-transform: uppercase;
-    box-shadow: 0 6px 24px rgba(37,211,102,0.4);
-    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-    white-space: nowrap;
-}
-
-.wa-float:hover {
-    background: #128C7E;
-    transform: translateY(-3px);
-    box-shadow: 0 12px 36px rgba(37,211,102,0.5);
-}
-
-.wa-float svg {
-    flex-shrink: 0;
-    transition: transform 0.3s ease;
-}
-
-.wa-float:hover svg {
-    transform: scale(1.1) rotate(5deg);
-}
-
-.wa-label {
-    line-height: 1;
-}
-
-@media (max-width: 768px) {
-    .wa-float {
-        bottom: 18px;
-        right: 16px;
-        padding: 15px;
-        border-radius: 50%;
-        width: 54px;
-        height: 54px;
-        justify-content: center;
-    }
-    .wa-label {
-        display: none;
-    }
-}
-
 .back-to-top {
     position: fixed;
     bottom: 40px;
