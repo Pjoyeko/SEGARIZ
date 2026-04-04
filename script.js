@@ -4,15 +4,23 @@ const EMAILJS_CONFIG = {
     TEMPLATE_ID: 'template_f7tlubt'    
 };
 
-// Initialize EmailJS
-(function () {
+// Initialize EmailJS — deferred until DOM ready so the defer script has loaded
+function initEmailJS() {
     if (typeof emailjs !== 'undefined') {
         emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
         console.log('EmailJS initialized');
     } else {
-        console.error('EmailJS not loaded');
+        // Script may still be loading (defer) — retry once after short delay
+        setTimeout(() => {
+            if (typeof emailjs !== 'undefined') {
+                emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+                console.log('EmailJS initialized (delayed)');
+            } else {
+                console.error('EmailJS not loaded');
+            }
+        }, 500);
     }
-})();
+}
 
 // ============================================
 // PORTFOLIO DATA
@@ -252,6 +260,10 @@ setTimeout(hidePreloader, 3000);
 // ============================================
 let lastScroll = 0;
 
+// Cache expensive DOM queries used in scroll handler — run once, not every frame
+const _heroEl = document.querySelector('.hero');
+const _shapesEl = document.querySelectorAll('.shape');
+
 // Single unified scroll handler for all scroll-based effects
 window.addEventListener('scroll', () => {
     if (!ticking) {
@@ -276,11 +288,10 @@ window.addEventListener('scroll', () => {
                 }
             }
 
-            // Parallax for hero shapes
-            const hero = document.querySelector('.hero');
-            if (hero && currentScroll < window.innerHeight) {
-                const shapes = document.querySelectorAll('.shape');
-                shapes.forEach((shape, index) => {
+            // Parallax for hero shapes — only when hero is visible
+            // Uses cached references to avoid DOM query every frame
+            if (_heroEl && _shapesEl.length > 0 && currentScroll < window.innerHeight) {
+                _shapesEl.forEach((shape, index) => {
                     const speed = 0.5 + (index * 0.2);
                     shape.style.transform = `translateY(${currentScroll * speed}px) rotate(${45 + currentScroll * 0.05}deg)`;
                 });
@@ -335,20 +346,48 @@ if (elements.navOverlay) {
 }
 
 // Close menu when clicking nav link
-elements.navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
+// Gunakan event delegation pada nav-menu agar semua link (termasuk generated) tertangkap
+if (elements.navMenu) {
+    elements.navMenu.addEventListener('click', (e) => {
+        const link = e.target.closest('.nav-link');
+        if (!link) return;
+
         e.preventDefault();
         const targetId = link.getAttribute('href');
+        if (!targetId || !targetId.startsWith('#')) return;
+
         const targetSection = document.querySelector(targetId);
-        
-        // Close mobile menu
+
+        // Tutup mobile menu dulu
         closeMenu();
-        
-        // Smooth scroll
+
+        // Smooth scroll setelah menu tertutup (delay kecil agar animasi close selesai)
         if (targetSection && elements.navbar) {
-            const navbarHeight = elements.navbar.offsetHeight;
-            const targetPosition = targetSection.offsetTop - navbarHeight;
-            window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+            setTimeout(() => {
+                const navbarHeight = elements.navbar.offsetHeight;
+                const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+                window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+            }, 50);
+        }
+    });
+}
+
+// Desktop nav links (di luar menu mobile) - tetap attach langsung
+elements.navLinks.forEach(link => {
+    // Hanya attach untuk desktop (link yang bukan di dalam nav-menu mobile)
+    link.addEventListener('click', (e) => {
+        // Kalau menu mobile sedang aktif, biarkan handler delegation di atas yang handle
+        if (elements.navMenu && elements.navMenu.classList.contains('active')) return;
+        if (window.innerWidth > 768) {
+            e.preventDefault();
+            const targetId = link.getAttribute('href');
+            if (!targetId || !targetId.startsWith('#')) return;
+            const targetSection = document.querySelector(targetId);
+            if (targetSection && elements.navbar) {
+                const navbarHeight = elements.navbar.offsetHeight;
+                const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+                window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+            }
         }
     });
 });
@@ -951,6 +990,9 @@ function setupServicesSwipe() {
 // INITIALIZATION
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize EmailJS (deferred script)
+    initEmailJS();
+
     // Generate portfolio horizontal grids
     generatePortfolioHorizontal(portfolioAcademicProjects, 'portfolioAcademicGrid', 'academic');
     generatePortfolioHorizontal(portfolioIndependentProjects, 'portfolioIndependentGrid', 'independent');
@@ -1348,34 +1390,55 @@ const filterTags = document.querySelectorAll('.filter-tag');
 
 filterTags.forEach(btn => {
     btn.addEventListener('click', () => {
+        // Update active state
         filterTags.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
         const filter = btn.getAttribute('data-filter');
         const cards = document.querySelectorAll('#portfolioIndependentGrid .portfolio-horizontal-card');
 
-        cards.forEach(card => {
-            const category = card.getAttribute('data-category') || '';
-            const show = filter === 'all' || category === filter;
-            if (show) {
-                card.style.display = '';
-                // Animate in
-                requestAnimationFrame(() => {
-                    card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                    card.style.opacity = '1';
-                    card.style.transform = 'scale(1)';
-                    card.style.pointerEvents = 'auto';
-                });
-            } else {
-                card.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
-                card.style.opacity = '0';
-                card.style.transform = 'scale(0.96)';
-                card.style.pointerEvents = 'none';
-                setTimeout(() => {
-                    if (card.style.opacity === '0') card.style.display = 'none';
-                }, 260);
+        // BATCH: Read all categories first (avoids interleaved read/write = forced reflow)
+        const cardData = Array.from(cards).map(card => ({
+            el: card,
+            show: filter === 'all' || (card.getAttribute('data-category') || '') === filter
+        }));
+
+        // BATCH: Apply hide instantly (no transition needed for hidden → hidden)
+        cardData.forEach(({ el, show }) => {
+            if (!show) {
+                el.style.transition = 'opacity 0.22s ease, transform 0.22s ease';
+                el.style.opacity = '0';
+                el.style.transform = 'scale(0.96)';
+                el.style.pointerEvents = 'none';
             }
         });
+
+        // After fade-out, hide display:none and show visible cards
+        setTimeout(() => {
+            requestAnimationFrame(() => {
+                cardData.forEach(({ el, show }) => {
+                    if (!show) {
+                        // Only hide if still faded (guard against rapid clicks)
+                        if (el.style.opacity === '0') el.style.display = 'none';
+                    } else {
+                        el.style.display = '';
+                        // Force a reflow read once (batched, not per-card)
+                    }
+                });
+
+                // Trigger show animations in next frame after display changes settle
+                requestAnimationFrame(() => {
+                    cardData.forEach(({ el, show }) => {
+                        if (show) {
+                            el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                            el.style.opacity = '1';
+                            el.style.transform = 'scale(1)';
+                            el.style.pointerEvents = 'auto';
+                        }
+                    });
+                });
+            });
+        }, 230);
     });
 });
 
