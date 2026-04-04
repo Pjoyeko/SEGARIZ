@@ -154,7 +154,8 @@ const portfolioIndependentProjects = [
 ];
 
 // ============================================
-// PORTFOLIO NAVIGATION ARROWS + TOUCH SWIPE
+// PORTFOLIO NAVIGATION ARROWS
+// Swipe di mobile ditangani CSS scroll-snap native — tidak perlu JS touch handler
 // ============================================
 function setupPortfolioNavigation(scrollId, prevId, nextId) {
     const scroll = document.getElementById(scrollId);
@@ -163,56 +164,19 @@ function setupPortfolioNavigation(scrollId, prevId, nextId) {
 
     if (!scroll) return;
 
-    const getScrollAmount = () => Math.min(scroll.clientWidth * 0.85, 420);
+    // Geser satu card width saat tombol panah diklik
+    const getCardWidth = () => {
+        const card = scroll.querySelector('.portfolio-horizontal-card');
+        if (!card) return scroll.clientWidth * 0.8;
+        return card.offsetWidth + parseInt(getComputedStyle(scroll).gap || 0);
+    };
 
     if (prevBtn) prevBtn.addEventListener('click', () => {
-        scroll.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+        scroll.scrollBy({ left: -getCardWidth(), behavior: 'smooth' });
     });
     if (nextBtn) nextBtn.addEventListener('click', () => {
-        scroll.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+        scroll.scrollBy({ left: getCardWidth(), behavior: 'smooth' });
     });
-
-    // Touch swipe — drag ikuti jari, snap di touchend
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let startScrollLeft = 0;
-    let isDragging = false;
-    let dirLocked = null;
-
-    scroll.addEventListener('touchstart', (e) => {
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-        startScrollLeft = scroll.scrollLeft;
-        isDragging = false;
-        dirLocked = null;
-    }, { passive: true });
-
-    scroll.addEventListener('touchmove', (e) => {
-        const dx = e.touches[0].clientX - touchStartX;
-        const dy = e.touches[0].clientY - touchStartY;
-
-        if (!dirLocked && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
-            dirLocked = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
-        }
-
-        if (dirLocked === 'h') {
-            scroll.scrollLeft = startScrollLeft - dx;
-            isDragging = true;
-        }
-    }, { passive: true });
-
-    scroll.addEventListener('touchend', (e) => {
-        if (!isDragging) return;
-        const dx = e.changedTouches[0].clientX - touchStartX;
-        if (Math.abs(dx) > 40) {
-            scroll.scrollBy({
-                left: dx < 0 ? getScrollAmount() : -getScrollAmount(),
-                behavior: 'smooth'
-            });
-        }
-        isDragging = false;
-        dirLocked = null;
-    }, { passive: true });
 }
 
 
@@ -974,59 +938,9 @@ function setupServicesNavigation() {
     });
 }
 
-// Touch/Swipe Support untuk Services
+// Services swipe ditangani CSS scroll-snap native — fungsi ini dikosongkan
 function setupServicesSwipe() {
-    const servicesScroll = document.getElementById('servicesScroll');
-    if (!servicesScroll) return;
-
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let isDragging = false;
-    let dirLocked = null;
-    let startScrollLeft = 0;
-
-    servicesScroll.addEventListener('touchstart', (e) => {
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-        startScrollLeft = servicesScroll.scrollLeft;
-        isDragging = false;
-        dirLocked = null;
-    }, { passive: true });
-
-    servicesScroll.addEventListener('touchmove', (e) => {
-        const dx = e.touches[0].clientX - touchStartX;
-        const dy = e.touches[0].clientY - touchStartY;
-
-        // Kunci arah sekali setelah 8px
-        if (!dirLocked && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
-            dirLocked = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
-        }
-
-        if (dirLocked === 'h') {
-            // Ikuti jari secara natural (drag langsung)
-            servicesScroll.scrollLeft = startScrollLeft - dx;
-            isDragging = true;
-        }
-        // Jika arah vertikal, biarkan browser scroll halaman biasa
-    }, { passive: true });
-
-    servicesScroll.addEventListener('touchend', (e) => {
-        if (!isDragging) return;
-        const dx = e.changedTouches[0].clientX - touchStartX;
-        const swipeThreshold = 40;
-
-        if (Math.abs(dx) > swipeThreshold) {
-            // Snap ke kartu berikutnya/sebelumnya
-            const snapAmount = Math.min(servicesScroll.clientWidth * 0.85, 380);
-            servicesScroll.scrollBy({
-                left: dx < 0 ? snapAmount : -snapAmount,
-                behavior: 'smooth'
-            });
-        }
-
-        isDragging = false;
-        dirLocked = null;
-    }, { passive: true });
+    // Tidak perlu JS touch handler — browser handle sendiri via CSS scroll-snap
 }
 
 // ============================================
