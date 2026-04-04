@@ -1259,7 +1259,7 @@ section {
     background: transparent;
     border: 1px solid rgba(201, 169, 110, 0.1);
     padding: 48px 40px;
-    transition: border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
+    transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
     min-height: 480px;
@@ -1267,7 +1267,6 @@ section {
     flex-direction: column;
     scroll-snap-align: start;
     scroll-snap-stop: always;
-    will-change: transform;
 }
 
 .service-card-horizontal::before {
@@ -1382,65 +1381,78 @@ section {
 .portfolio-header {
     text-align: left;
     max-width: 100%;
-    margin: 0 auto 60px;
-    padding: 0 40px;
+    margin: 0 auto 48px;
+    padding: 0 40px 36px;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
     border-bottom: 1px solid rgba(201, 169, 110, 0.1);
-    padding-bottom: 40px;
 }
 
 .portfolio-header .title-underline {
     margin-left: 0;
 }
 
+/* Scroll progress bar bawah — pengganti scrollbar jelek */
+.portfolio-scroll-progress {
+    height: 1px;
+    background: rgba(201,169,110,0.1);
+    margin: 12px 40px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.portfolio-scroll-progress-bar {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    width: 0%;
+    transition: width 0.1s linear;
+    border-radius: 1px;
+}
+
 .portfolio-horizontal-scroll {
     overflow-x: auto;
     overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
     scroll-snap-type: x mandatory;
-    touch-action: pan-x pinch-zoom;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(201,169,110,0.4) transparent;
-    padding: 20px 0 40px;
+    scroll-behavior: smooth;
+    /* Lock horizontal pan — cegah scroll vertikal conflict */
+    touch-action: pan-x;
+    /* Sembunyikan scrollbar di semua browser */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 8px 0 32px;
 }
 
 .portfolio-horizontal-scroll::-webkit-scrollbar {
-    height: 1px;
-}
-
-.portfolio-horizontal-scroll::-webkit-scrollbar-track {
-    background: rgba(201,169,110,0.1);
-}
-
-.portfolio-horizontal-scroll::-webkit-scrollbar-thumb {
-    background: var(--gold);
-    border-radius: 0;
-}
-
-.portfolio-horizontal-scroll::-webkit-scrollbar-thumb:hover {
-    background: var(--gold-dark);
+    display: none;
 }
 
 .portfolio-horizontal-grid {
     display: flex;
-    gap: 24px;
-    width: max-content;
+    gap: 20px;
     padding: 0 40px;
+    /* width: max-content supaya card tidak terkompresi saat flex wrapping */
+    width: max-content;
 }
 
 .portfolio-horizontal-card {
-    flex: 0 0 360px;
-    width: 360px;
+    /* Lebar eksplisit di kedua property — cegah reflow/geter */
+    flex: 0 0 340px;
+    width: 340px;
     background: var(--black);
     border: 1px solid rgba(201, 169, 110, 0.1);
-    transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+    /* Hanya animasi transform & shadow, bukan dimensi */
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.4s ease;
     cursor: pointer;
     overflow: hidden;
     position: relative;
     scroll-snap-align: start;
     scroll-snap-stop: always;
-    will-change: transform;
 }
 
 .portfolio-horizontal-card:hover {
@@ -1510,36 +1522,39 @@ section {
 }
 
 .portfolio-horizontal-info {
-    padding: 24px 26px;
+    padding: 20px 22px 22px;
     background: transparent;
     border-top: 1px solid rgba(201,169,110,0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 .portfolio-horizontal-category {
-    font-size: 10px;
-    letter-spacing: 3px;
+    font-size: 9px;
+    letter-spacing: 3.5px;
     text-transform: uppercase;
     color: var(--gold);
-    margin-bottom: 10px;
     font-weight: 700;
-    opacity: 0.8;
+    opacity: 0.75;
 }
 
 .portfolio-horizontal-title {
-    font-size: 20px;
+    font-size: 19px;
     color: var(--white);
-    margin-bottom: 8px;
+    margin: 0;
     font-weight: 300;
     font-family: var(--font-display);
-    line-height: 1.3;
-    letter-spacing: 0.3px;
+    line-height: 1.25;
+    letter-spacing: 0.2px;
 }
 
 .portfolio-horizontal-count {
-    font-size: 11px;
+    font-size: 10px;
     color: var(--light-gray);
-    letter-spacing: 1px;
-    opacity: 0.7;
+    letter-spacing: 1.5px;
+    opacity: 0.5;
+    margin-top: 2px;
 }
 
 .portfolio-divider {
@@ -2880,6 +2895,66 @@ section {
 /* ====================================
    Back to Top Button
    ==================================== */
+/* ====================================
+   Floating WhatsApp Button
+   ==================================== */
+.wa-float {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 997;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #25D366;
+    color: #fff;
+    padding: 13px 20px 13px 16px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-family: var(--font-primary);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    box-shadow: 0 6px 24px rgba(37,211,102,0.4);
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    white-space: nowrap;
+}
+
+.wa-float:hover {
+    background: #128C7E;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 36px rgba(37,211,102,0.5);
+}
+
+.wa-float svg {
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.wa-float:hover svg {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.wa-label {
+    line-height: 1;
+}
+
+@media (max-width: 768px) {
+    .wa-float {
+        bottom: 18px;
+        right: 16px;
+        padding: 15px;
+        border-radius: 50%;
+        width: 54px;
+        height: 54px;
+        justify-content: center;
+    }
+    .wa-label {
+        display: none;
+    }
+}
+
 .back-to-top {
     position: fixed;
     bottom: 40px;
@@ -3392,12 +3467,12 @@ img:not(.lazy-img) {
 
     .portfolio-horizontal-grid {
         padding: 0 20px;
-        gap: 18px;
+        gap: 14px;
     }
 
     .portfolio-horizontal-card {
-        flex: 0 0 290px;
-        width: 290px;
+        flex: 0 0 280px;
+        width: 280px;
     }
 
     .portfolio-horizontal-image {
@@ -3683,13 +3758,13 @@ img:not(.lazy-img) {
     }
 
     .portfolio-horizontal-grid {
-        padding: 0 18px;
-        gap: 14px;
+        padding: 0 16px;
+        gap: 12px;
     }
 
     .portfolio-horizontal-card {
-        flex: 0 0 272px;
-        width: 272px;
+        flex: 0 0 264px;
+        width: 264px;
     }
 
     .portfolio-horizontal-image {
@@ -3701,7 +3776,7 @@ img:not(.lazy-img) {
     }
 
     .portfolio-horizontal-info {
-        padding: 18px 20px;
+        padding: 16px 18px;
     }
 
     /* Contact */

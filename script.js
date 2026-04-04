@@ -970,6 +970,23 @@ document.addEventListener('DOMContentLoaded', () => {
     setupPortfolioNavigation('independentScroll', 'independentPrev', 'independentNext');
     setupPortfolioNavigation('academicScroll', 'academicPrev', 'academicNext');
 
+    // ── Progress bar: update saat scroll ──────────────────────
+    function setupScrollProgress(scrollId, progressId) {
+        const el = document.getElementById(scrollId);
+        const bar = document.getElementById(progressId);
+        if (!el || !bar) return;
+        const update = () => {
+            const max = el.scrollWidth - el.clientWidth;
+            const pct = max > 0 ? (el.scrollLeft / max) * 100 : 0;
+            bar.style.width = pct + '%';
+        };
+        el.addEventListener('scroll', update, { passive: true });
+        // Initial state setelah konten render
+        requestAnimationFrame(update);
+    }
+    setupScrollProgress('independentScroll', 'independentProgress');
+    setupScrollProgress('academicScroll', 'academicProgress');
+
     setupServicesNavigation();
     setupServicesSwipe();
     setupPanelSwipe();
@@ -1240,42 +1257,21 @@ function mobGoTo(idx) {
 
 // Swipe gesture
 document.addEventListener('DOMContentLoaded', () => {
-    const photoLayer = document.querySelector('.mob-hero');
-    if (!photoLayer) return;
-
-    photoLayer.addEventListener('touchstart', (e) => {
-        mobTouchX    = e.touches[0].clientX;
-        mobTouchY    = e.touches[0].clientY;
-        mobDirLocked = null;
-    }, { passive: true });
-
-    // passive: false agar bisa preventDefault() untuk cegah browser back/forward gesture
-    photoLayer.addEventListener('touchmove', (e) => {
-        const dx = e.touches[0].clientX - mobTouchX;
-        const dy = e.touches[0].clientY - mobTouchY;
-
-        // Tentukan arah satu kali saat threshold 8px tercapai
-        if (!mobDirLocked && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
-            mobDirLocked = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
-        }
-
-        if (mobDirLocked === 'h') {
-            // Blokir browser navigation gesture (swipe back/forward)
-            e.preventDefault();
-            const img = document.getElementById('mobPhotoImg');
-            if (img) img.style.transform = `translateX(${dx * 0.18}px)`;
-        }
-    }, { passive: false });
-
-    photoLayer.addEventListener('touchend', (e) => {
-        const img = document.getElementById('mobPhotoImg');
-        if (img) img.style.transform = '';
-        const dx = e.changedTouches[0].clientX - mobTouchX;
-        if (mobDirLocked === 'h' && Math.abs(dx) > 45) {
-            dx < 0 ? mobGoTo(mobImgIndex + 1) : mobGoTo(mobImgIndex - 1);
-        }
-        mobDirLocked = null;
-    }, { passive: true });
+    // ── Swipe foto di mob-hero: pakai CSS scroll-snap native, no JS drag ──
+    // Hanya pasang tap / swipe ringan via pointer events untuk navigasi foto
+    const heroZone = document.querySelector('.mob-hero');
+    if (heroZone) {
+        let startX = 0;
+        heroZone.addEventListener('pointerdown', (e) => {
+            startX = e.clientX;
+        }, { passive: true });
+        heroZone.addEventListener('pointerup', (e) => {
+            const dx = e.clientX - startX;
+            if (Math.abs(dx) > 44) {
+                dx < 0 ? mobGoTo(mobImgIndex + 1) : mobGoTo(mobImgIndex - 1);
+            }
+        }, { passive: true });
+    }
 
     // Close button
     const closeBtn = document.getElementById('mobClose');
