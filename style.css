@@ -45,7 +45,6 @@ a, button, [role="button"] {
 }
 
 html {
-    scroll-behavior: smooth;
     overflow-x: hidden;
 }
 
@@ -301,7 +300,7 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     transform: translateZ(0);
-    will-change: transform;
+    /* translateZ(0) already promotes to GPU layer — will-change not needed */
 }
 
 .hero-overlay {
@@ -1270,8 +1269,7 @@ section {
     background: transparent;
     border: 1px solid rgba(201, 169, 110, 0.1);
     padding: 44px 36px;
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-                border-color 0.35s ease,
+    transition: border-color 0.35s ease,
                 background 0.35s ease,
                 box-shadow 0.35s ease;
     position: relative;
@@ -1280,7 +1278,6 @@ section {
     display: flex;
     flex-direction: column;
     scroll-snap-align: start;
-    scroll-snap-stop: normal;
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -1295,15 +1292,11 @@ section {
     transform: scaleX(0);
     transition: transform 0.4s ease;
     transform-origin: left;
-    /* Pseudo-element juga perlu GPU hint */
-    will-change: transform;
 }
 
 .service-card-horizontal:hover {
-    transform: translateY(-6px);
     border-color: rgba(201, 169, 110, 0.25);
     background: rgba(201, 169, 110, 0.02);
-    /* Shadow lebih ringan */
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
 }
 
@@ -1428,20 +1421,21 @@ section {
     background: linear-gradient(90deg, var(--gold), var(--gold-light));
     transform: scaleX(0);
     transform-origin: left center;
-    /* pakai transform (GPU) bukan width agar tidak menyebabkan layout repaint/jitter */
-    will-change: transform;
     border-radius: 1px;
 }
 
 .portfolio-horizontal-scroll {
     overflow-x: auto;
     overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    touch-action: pan-x;
+    /* proximity bukan mandatory — kasih toleransi saat swipe cepat, tidak snap paksa */
+    scroll-snap-type: x proximity;
+    /* pan-x tapi juga izinkan pinch — lebih natural */
+    touch-action: pan-x pinch-zoom;
     scrollbar-width: none;
     -ms-overflow-style: none;
     padding: 8px 0 32px;
     scroll-padding-left: 40px;
+    overscroll-behavior-x: contain;
 }
 
 .portfolio-horizontal-scroll::-webkit-scrollbar {
@@ -1468,14 +1462,12 @@ section {
     overflow: hidden;
     position: relative;
     scroll-snap-align: start;
-    scroll-snap-stop: normal;
     -webkit-tap-highlight-color: transparent;
 }
 
 .portfolio-horizontal-card:hover {
     border-color: rgba(201, 169, 110, 0.3);
-    transform: translateY(-4px);
-    /* Shadow lebih ringan — tidak trigger repaint berat */
+    /* Hapus translateY — translate saat scroll bikin frame drop & snap fight */
     box-shadow: 0 16px 40px rgba(0,0,0,0.4);
 }
 
@@ -4011,8 +4003,8 @@ img:not(.lazy-img) {
         background: var(--black);
         overflow: hidden;
         cursor: pointer;
-        /* Lock horizontal swipe — browser tidak intercept sebagai scroll vertikal */
-        touch-action: pan-x;
+        /* 'manipulation' = tap+double tap normal, tidak block swipe arah manapun */
+        touch-action: manipulation;
     }
 
     .mob-hero-img {
@@ -4023,9 +4015,6 @@ img:not(.lazy-img) {
         user-select: none;
         -webkit-user-drag: none;
         transition: opacity .18s ease;
-        will-change: opacity;
-        /* Cegah layout shift saat gambar load */
-        backface-visibility: hidden;
     }
 
     .mob-hero-img.mob-fading { opacity: 0; }
@@ -4069,10 +4058,10 @@ img:not(.lazy-img) {
         display: flex;
         gap: 0;
         overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
         background: #121110;
         border-bottom: 1px solid rgba(201,169,110,.12);
+        overscroll-behavior-x: contain;
     }
 
     .mob-tabstrip::-webkit-scrollbar { display: none; }
@@ -4139,10 +4128,8 @@ img:not(.lazy-img) {
         flex: 1;
         min-height: 0;
         overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
         padding: 20px 20px 0;
-        /* Kunci scroll di dalam elemen ini, tidak bocor ke halaman */
         overscroll-behavior: contain;
         touch-action: pan-y;
     }
@@ -4594,8 +4581,8 @@ img:not(.lazy-img) {
     margin-bottom: 8px;
     overflow-x: auto;
     scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: x proximity;
+    overscroll-behavior-x: contain;
 }
 
 .process-flow::-webkit-scrollbar { display: none; }
@@ -4775,13 +4762,12 @@ img:not(.lazy-img) {
     opacity: 0;
     transform: translateY(30px);
     transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1);
-    will-change: opacity, transform;
+    /* Removed will-change: tidak semua elemen perlu GPU layer sebelum animasi */
 }
 
 [data-animate].animated {
     opacity: 1;
     transform: translateY(0);
-    will-change: auto;
 }
 
 /* stagger children */
@@ -5393,20 +5379,6 @@ html {
 
 .mob-info {
     overscroll-behavior: contain;
-}
-
-/* ── FIX J: Smooth scrolling halaman — hanya aktifkan
-   kalau user tidak meminta reduced motion               */
-@media (prefers-reduced-motion: no-preference) {
-    html {
-        scroll-behavior: smooth;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    html {
-        scroll-behavior: auto;
-    }
 }
 
 /* FIX K reverted: touch-action:pan-y blocks horizontal scroll
