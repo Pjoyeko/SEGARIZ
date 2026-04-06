@@ -314,9 +314,13 @@ function openMenu() {
     elements.menuToggle.setAttribute('aria-expanded', 'true');
     if (elements.navOverlay) elements.navOverlay.classList.add('active');
     const spans = elements.menuToggle.querySelectorAll('span');
-    spans[0].style.transform = 'rotate(45deg) translateY(10px)';
+    // Ukur jarak antar span secara dinamis agar akurat di semua kondisi
+    const gap = spans.length >= 2
+        ? spans[1].getBoundingClientRect().top - spans[0].getBoundingClientRect().top
+        : 8;
+    spans[0].style.transform = `rotate(45deg) translateY(${gap}px)`;
     spans[1].style.opacity = '0';
-    spans[2].style.transform = 'rotate(-45deg) translateY(-10px)';
+    spans[2].style.transform = `rotate(-45deg) translateY(-${gap}px)`;
 }
 
 function closeMenu() {
@@ -753,25 +757,35 @@ if (projectBackdrop) {
     projectBackdrop.addEventListener('click', closePanel);
 }
 
-// Keyboard navigation for panel
+// ============================================
+// KEYBOARD NAVIGATION — unified handler
+// Menggabungkan 3 keydown listener menjadi satu
+// ============================================
 document.addEventListener('keydown', (e) => {
-    const panel = document.getElementById('projectDetailPanel');
-    if (!panel || !panel.classList.contains('active')) return;
-    
-    switch(e.key) {
-        case 'Escape':
-            closePanel();
-            break;
-        case 'ArrowLeft':
-            showPrevImage();
-            break;
-        case 'ArrowRight':
-            showNextImage();
-            break;
-        case 'f':
-        case 'F':
-            toggleFullscreen();
-            break;
+    // Mob panel (mobile detail panel)
+    const mobPanel = document.getElementById('mobPanel');
+    if (mobPanel && mobPanel.classList.contains('mob-active')) {
+        if (e.key === 'Escape')     { closeMobPanel(); return; }
+        if (e.key === 'ArrowRight') { mobGoTo(mobImgIndex + 1); return; }
+        if (e.key === 'ArrowLeft')  { mobGoTo(mobImgIndex - 1); return; }
+        return;
+    }
+
+    // Desktop project detail panel
+    const desktopPanel = document.getElementById('projectDetailPanel');
+    if (desktopPanel && desktopPanel.classList.contains('active')) {
+        switch (e.key) {
+            case 'Escape':    closePanel(); break;
+            case 'ArrowLeft': showPrevImage(); break;
+            case 'ArrowRight':showNextImage(); break;
+            case 'f': case 'F': toggleFullscreen(); break;
+        }
+        return;
+    }
+
+    // Mobile nav menu
+    if (e.key === 'Escape' && elements.navMenu && elements.navMenu.classList.contains('active')) {
+        closeMenu();
     }
 });
 
@@ -891,25 +905,6 @@ if (elements.backToTop) {
 }
 
 // ============================================
-// SMOOTH SCROLL FOR ALL INTERNAL LINKS
-// ============================================
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        const targetId = this.getAttribute('href');
-        if (targetId === '#' || targetId === '#!') return;
-        
-        e.preventDefault();
-        const targetElement = document.querySelector(targetId);
-        
-        if (targetElement && elements.navbar) {
-            const navbarHeight = elements.navbar.offsetHeight;
-            const targetPosition = targetElement.offsetTop - navbarHeight;
-            window.scrollTo({ top: targetPosition, behavior: 'smooth' });
-        }
-    });
-});
-
-// ============================================
 // NEWSLETTER FORM
 // ============================================
 const newsletterForm = document.querySelector('.newsletter-form');
@@ -918,6 +913,9 @@ if (newsletterForm) {
     const newsletterInput = newsletterForm.querySelector('input');
     
     if (newsletterButton && newsletterInput) {
+        // Simpan HTML asli tombol (termasuk SVG icon) untuk di-restore setelah interaksi
+        const originalBtnHTML = newsletterButton.innerHTML;
+
         newsletterButton.addEventListener('click', (e) => {
             e.preventDefault();
             const email = newsletterInput.value.trim();
@@ -928,7 +926,7 @@ if (newsletterForm) {
                 newsletterInput.value = '';
                 
                 setTimeout(() => {
-                    newsletterButton.textContent = '→';
+                    newsletterButton.innerHTML = originalBtnHTML;
                     newsletterButton.style.background = '';
                 }, 2500);
             } else {
@@ -936,7 +934,7 @@ if (newsletterForm) {
                 newsletterButton.style.background = '#f44336';
                 
                 setTimeout(() => {
-                    newsletterButton.textContent = '→';
+                    newsletterButton.innerHTML = originalBtnHTML;
                     newsletterButton.style.background = '';
                 }, 2500);
             }
@@ -954,12 +952,6 @@ if (newsletterForm) {
 // ============================================
 // ACCESSIBILITY ENHANCEMENTS
 // ============================================
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && elements.navMenu && elements.navMenu.classList.contains('active')) {
-        closeMenu();
-    }
-});
-
 // ============================================
 // SERVICES NAVIGATION
 // ============================================
@@ -1032,6 +1024,23 @@ document.addEventListener('DOMContentLoaded', () => {
     setupServicesNavigation();
     setupServicesSwipe();
     setupPanelSwipe();
+
+    // Setup filter tags SETELAH kartu portfolio di-generate
+    setupFilterTags();
+
+    // Tutup panel yang salah saat user resize melewati breakpoint 768px
+    let _lastBreakpoint = window.innerWidth <= 768 ? 'mobile' : 'desktop';
+    window.addEventListener('resize', () => {
+        const current = window.innerWidth <= 768 ? 'mobile' : 'desktop';
+        if (current !== _lastBreakpoint) {
+            _lastBreakpoint = current;
+            // Tutup kedua panel saat breakpoint berubah untuk menghindari panel ghost
+            const desktopPanel = document.getElementById('projectDetailPanel');
+            if (desktopPanel && desktopPanel.classList.contains('active')) closePanel();
+            const mobPanel = document.getElementById('mobPanel');
+            if (mobPanel && mobPanel.classList.contains('mob-active')) closeMobPanel();
+        }
+    });
     
     const serviceCards = document.querySelectorAll('.service-card-horizontal');
     serviceCards.forEach(card => observer.observe(card));
@@ -1075,8 +1084,9 @@ function openMobPanel(portfolioType, projectIndex) {
     if (panel) {
         panel.classList.add('mob-active');
         document.body.style.overflow = 'hidden';
-        const sheet = document.getElementById('mobSheet');
-        if (sheet) sheet.scrollTop = 0;
+        // Reset scroll mob-info ke atas (mobRender() juga sudah melakukan ini via mobInfo.scrollTop=0)
+        const info = document.getElementById('mobInfo');
+        if (info) info.scrollTop = 0;
 
         // Push state ke history supaya tombol back HP nutup panel dulu,
         // bukan langsung keluar dari website
@@ -1337,14 +1347,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Keyboard
-document.addEventListener('keydown', (e) => {
-    const panel = document.getElementById('mobPanel');
-    if (!panel || !panel.classList.contains('mob-active')) return;
-    if (e.key === 'Escape')     closeMobPanel();
-    if (e.key === 'ArrowRight') mobGoTo(mobImgIndex + 1);
-    if (e.key === 'ArrowLeft')  mobGoTo(mobImgIndex - 1);
-});
 // ============================================
 // STATS BAR — Animated Counter
 // ============================================
@@ -1385,77 +1387,62 @@ if (statsBar) statsObserver.observe(statsBar);
 
 // ============================================
 // CASE STUDY FILTER TAGS
+// Fungsi ini dijalankan setelah kartu di-generate di DOMContentLoaded
 // ============================================
-const filterTags = document.querySelectorAll('.filter-tag');
+function setupFilterTags() {
+    const filterTags = document.querySelectorAll('.filter-tag');
+    if (!filterTags.length) return;
 
-filterTags.forEach(btn => {
-    btn.addEventListener('click', () => {
-        // Update active state
-        filterTags.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+    filterTags.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Update active state
+            filterTags.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
 
-        const filter = btn.getAttribute('data-filter');
-        const cards = document.querySelectorAll('#portfolioIndependentGrid .portfolio-horizontal-card');
+            const filter = btn.getAttribute('data-filter');
+            const cards = document.querySelectorAll('#portfolioIndependentGrid .portfolio-horizontal-card');
 
-        // BATCH: Read all categories first (avoids interleaved read/write = forced reflow)
-        const cardData = Array.from(cards).map(card => ({
-            el: card,
-            show: filter === 'all' || (card.getAttribute('data-category') || '') === filter
-        }));
+            // BATCH: Read all categories first (avoids interleaved read/write = forced reflow)
+            const cardData = Array.from(cards).map(card => ({
+                el: card,
+                show: filter === 'all' || (card.getAttribute('data-category') || '') === filter
+            }));
 
-        // BATCH: Apply hide instantly (no transition needed for hidden → hidden)
-        cardData.forEach(({ el, show }) => {
-            if (!show) {
-                el.style.transition = 'opacity 0.22s ease, transform 0.22s ease';
-                el.style.opacity = '0';
-                el.style.transform = 'scale(0.96)';
-                el.style.pointerEvents = 'none';
-            }
-        });
+            // BATCH: Apply hide instantly (no transition needed for hidden → hidden)
+            cardData.forEach(({ el, show }) => {
+                if (!show) {
+                    el.style.transition = 'opacity 0.22s ease, transform 0.22s ease';
+                    el.style.opacity = '0';
+                    el.style.transform = 'scale(0.96)';
+                    el.style.pointerEvents = 'none';
+                }
+            });
 
-        // After fade-out, hide display:none and show visible cards
-        setTimeout(() => {
-            requestAnimationFrame(() => {
-                cardData.forEach(({ el, show }) => {
-                    if (!show) {
-                        // Only hide if still faded (guard against rapid clicks)
-                        if (el.style.opacity === '0') el.style.display = 'none';
-                    } else {
-                        el.style.display = '';
-                        // Force a reflow read once (batched, not per-card)
-                    }
-                });
-
-                // Trigger show animations in next frame after display changes settle
+            // After fade-out, hide display:none and show visible cards
+            setTimeout(() => {
                 requestAnimationFrame(() => {
                     cardData.forEach(({ el, show }) => {
-                        if (show) {
-                            el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                            el.style.opacity = '1';
-                            el.style.transform = 'scale(1)';
-                            el.style.pointerEvents = 'auto';
+                        if (!show) {
+                            // Only hide if still faded (guard against rapid clicks)
+                            if (el.style.opacity === '0') el.style.display = 'none';
+                        } else {
+                            el.style.display = '';
                         }
                     });
-                });
-            });
-        }, 230);
-    });
-});
 
-// ============================================
-// TAG DATA ATTRIBUTE on portfolio cards
-// (patch generatePortfolioHorizontal to add data-category)
-// ============================================
-const _origGenerate = generatePortfolioHorizontal;
-// Override: add data-category to each card after generation
-function generatePortfolioHorizontalWithCategory(projects, gridId, portfolioType) {
-    _origGenerate(projects, gridId, portfolioType);
-    const grid = document.getElementById(gridId);
-    if (!grid) return;
-    const cards = grid.querySelectorAll('.portfolio-horizontal-card');
-    cards.forEach((card, i) => {
-        if (projects[i]) {
-            card.setAttribute('data-category', projects[i].category);
-        }
+                    // Trigger show animations in next frame after display changes settle
+                    requestAnimationFrame(() => {
+                        cardData.forEach(({ el, show }) => {
+                            if (show) {
+                                el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                                el.style.opacity = '1';
+                                el.style.transform = 'scale(1)';
+                                el.style.pointerEvents = 'auto';
+                            }
+                        });
+                    });
+                });
+            }, 230);
+        });
     });
 }

@@ -5404,6 +5404,15 @@ html {
     overscroll-behavior: contain;
 }
 
+/* ── FIX I-2: Mob panel — cegah rubber-band scroll iOS bocor ke body ── */
+.mob-panel {
+    overscroll-behavior: contain;
+}
+
+.mob-info {
+    overscroll-behavior: contain;
+}
+
 /* ── FIX J: Smooth scrolling halaman — hanya aktifkan
    kalau user tidak meminta reduced motion               */
 @media (prefers-reduced-motion: no-preference) {
