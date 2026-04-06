@@ -1425,9 +1425,12 @@ section {
     position: absolute;
     top: 0; left: 0;
     height: 100%;
+    width: 100%;
     background: linear-gradient(90deg, var(--gold), var(--gold-light));
-    width: 0%;
-    transition: width 0.1s linear;
+    transform: scaleX(0);
+    transform-origin: left center;
+    /* pakai transform (GPU) bukan width agar tidak menyebabkan layout repaint/jitter */
+    will-change: transform;
     border-radius: 1px;
 }
 

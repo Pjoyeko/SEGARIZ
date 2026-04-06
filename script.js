@@ -1005,14 +1005,15 @@ document.addEventListener('DOMContentLoaded', () => {
     setupPortfolioNavigation('academicScroll', 'academicPrev', 'academicNext');
 
     // ── Progress bar: update saat scroll ──────────────────────
+    // Pakai transform:scaleX (GPU-only) bukan width untuk menghindari layout repaint & jitter
     function setupScrollProgress(scrollId, progressId) {
         const el = document.getElementById(scrollId);
         const bar = document.getElementById(progressId);
         if (!el || !bar) return;
         const update = () => {
             const max = el.scrollWidth - el.clientWidth;
-            const pct = max > 0 ? (el.scrollLeft / max) * 100 : 0;
-            bar.style.width = pct + '%';
+            const pct = max > 0 ? el.scrollLeft / max : 0;
+            bar.style.transform = `scaleX(${pct})`;
         };
         el.addEventListener('scroll', update, { passive: true });
         // Initial state setelah konten render
