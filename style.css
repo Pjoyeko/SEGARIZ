@@ -1437,15 +1437,14 @@ section {
 .portfolio-horizontal-scroll {
     overflow-x: auto;
     overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
+    /* -webkit-overflow-scrolling: touch — dihapus, deprecated & konflik dengan scroll-snap di iOS modern */
     scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    /* Tidak set touch-action agar browser bisa handle horizontal swipe native */
+    /* scroll-behavior: smooth — dihapus, konflik dengan scroll-snap saat swipe (menyebabkan getaran) */
+    /* will-change: scroll-position — dihapus, nilai tidak valid untuk will-change */
     scrollbar-width: none;
     -ms-overflow-style: none;
     padding: 8px 0 32px;
     scroll-padding-left: 40px;
-    will-change: scroll-position;
 }
 
 .portfolio-horizontal-scroll::-webkit-scrollbar {
@@ -5369,14 +5368,9 @@ html {
     isolation: isolate;
 }
 
-/* ── FIX F: Cegah scroll-behavior smooth dari
-   mengganggu performa pada konten yang panjang
-   di browser yang tidak mendukung dengan baik            */
-@media (prefers-reduced-motion: no-preference) {
-    .portfolio-horizontal-scroll {
-        scroll-behavior: smooth;
-    }
-}
+/* ── FIX F: scroll-behavior smooth pada .portfolio-horizontal-scroll
+   DIHAPUS — konflik dengan scroll-snap menyebabkan getaran saat swipe.
+   Tombol panah (prev/next) pakai scrollBy({ behavior:'smooth' }) sendiri. */
 
 /* ── FIX G: Optimasi rendering img pada card portfolio —
    hint browser untuk decode di background thread         */
@@ -5426,9 +5420,6 @@ html {
 
 @media (prefers-reduced-motion: reduce) {
     html {
-        scroll-behavior: auto;
-    }
-    .portfolio-horizontal-scroll {
         scroll-behavior: auto;
     }
 }
