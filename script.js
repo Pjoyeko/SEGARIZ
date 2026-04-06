@@ -973,11 +973,6 @@ function setupServicesNavigation() {
     });
 }
 
-// Services swipe ditangani CSS scroll-snap native — fungsi ini dikosongkan
-function setupServicesSwipe() {
-    // Tidak perlu JS touch handler — browser handle sendiri via CSS scroll-snap
-}
-
 // ============================================
 // INITIALIZATION
 // ============================================
@@ -1023,7 +1018,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setupScrollProgress('academicScroll', 'academicProgress');
 
     setupServicesNavigation();
-    setupServicesSwipe();
     setupPanelSwipe();
 
     // Setup filter tags SETELAH kartu portfolio di-generate

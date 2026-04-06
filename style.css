@@ -1280,8 +1280,7 @@ section {
     display: flex;
     flex-direction: column;
     scroll-snap-align: start;
-    scroll-snap-stop: always;
-    will-change: transform;
+    scroll-snap-stop: normal;
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -1437,10 +1436,8 @@ section {
 .portfolio-horizontal-scroll {
     overflow-x: auto;
     overflow-y: hidden;
-    /* -webkit-overflow-scrolling: touch — dihapus, deprecated & konflik dengan scroll-snap di iOS modern */
     scroll-snap-type: x mandatory;
-    /* scroll-behavior: smooth — dihapus, konflik dengan scroll-snap saat swipe (menyebabkan getaran) */
-    /* will-change: scroll-position — dihapus, nilai tidak valid untuk will-change */
+    touch-action: pan-x;
     scrollbar-width: none;
     -ms-overflow-style: none;
     padding: 8px 0 32px;
@@ -1471,10 +1468,7 @@ section {
     overflow: hidden;
     position: relative;
     scroll-snap-align: start;
-    scroll-snap-stop: always;
-    /* GPU compositing — elemen ini akan dianimasi */
-    will-change: transform;
-    /* Hapus highlight biru/abu saat tap di mobile */
+    scroll-snap-stop: normal;
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -1497,8 +1491,6 @@ section {
     height: 100%;
     object-fit: cover;
     transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: transform;
-    /* Pastiin tidak ada layout property yang berubah */
     display: block;
 }
 
@@ -5246,13 +5238,6 @@ html {
     .hero-buttons .btn {
         max-width: 210px;
     }
-}
-
-/* ── FIX 21: Hentikan will-change pada elemen yang tidak
-            terlihat — hemat GPU memory ── */
-.portfolio-horizontal-card:not(:hover),
-.service-card-horizontal:not(:hover) {
-    will-change: auto;
 }
 
 /* ── FIX 22: Image di portfolio tidak meluap saat load ── */
